@@ -67,7 +67,8 @@ The Instrument, Genre, and Connection models will have many-to-many relationship
 - Simple Navigation 
 
 ### **User Flow**
-What will the user flow look like?
+User Searching for Musician
+![user flow diagram](/user-flow_FM.png)
 
 ### **Stretch Goals**
 1. Adding a chat feature (with Telegram)
