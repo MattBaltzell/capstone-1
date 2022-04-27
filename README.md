@@ -66,7 +66,7 @@ The Instrument, Genre, and Connection models will have many-to-many relationship
 - Search
 - Simple Navigation 
 
-### **User Flow**
+### **User Flows**
 User Searching for Musician
 ![user flow diagram](/img/user-flow_FM.png)
 
