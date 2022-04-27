@@ -41,7 +41,7 @@ Database models will consist of the following:
 
 The Instrument, Genre, and Connection models will have many-to-many relationships with the User model.  
 
-![database schema](/database-schema_FM.png)
+![database schema](/img/database-schema_FM.png)
 
 ### **Potential Issues**
 1. This should not be an issue, but if enough calls are made to the Google maps api, Google would start charging my card. If this happens, I will monitor and disable the search features for the rest of the month if charges get too high.
@@ -68,7 +68,7 @@ The Instrument, Genre, and Connection models will have many-to-many relationship
 
 ### **User Flow**
 User Searching for Musician
-![user flow diagram](/user-flow_FM.png)
+![user flow diagram](/img/user-flow_FM.png)
 
 ### **Stretch Goals**
 1. Adding a chat feature (with Telegram)
