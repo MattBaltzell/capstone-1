@@ -130,7 +130,7 @@ class User(db.Model):
     )
 
     zip_code = db.Column(
-        db.Integer,
+        db.String,
     )
     
     created_at = db.Column(
@@ -195,7 +195,7 @@ class User(db.Model):
         return len(found_user_list) == 1
 
     @classmethod
-    def signup(cls, username, email, password, zip_code, image_url):
+    def signup(cls, username, email, password, zip_code, is_band, image_url):
         """Sign up user.
         Hashes password and adds user to system.
         """
@@ -207,6 +207,7 @@ class User(db.Model):
             email=email,
             password=hashed_pwd,
             zip_code=zip_code,
+            is_band=is_band,
             image_url=image_url,
         )
 
