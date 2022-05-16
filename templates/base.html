@@ -4,11 +4,18 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/static/styles.css">
+    <link rel="stylesheet" href="{{url_for('static',filename='css/main.css')}}">
     <script src="/static/app.js" defer></script>
     <title>{% block title %}{% endblock %}</title>
 </head>
 <body>
+    
+    
+    {% for msg in get_flashed_messages() %}
+    <div class="alert alert-danger" role="alert">{{msg}}</div>
+    {% endfor %}
+    <div class="container flex flex-col h-screen bg-slate-100 p-4">
     {% block content %}{% endblock %}
+    </div>
 </body>
 </html>
