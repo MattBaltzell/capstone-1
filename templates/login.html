@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}Hook - Login!{% endblock %}
+
+{% block content %}
+<div class="flex flex-col items-stretch justify-between h-full px-2 py-8">
+    <img src="/static/img/hook-logo.svg" class="box-border h-7 w-21 self-center" alt="hook">
+    <div class="container">
+        <h1 class="text-6xl font-light mb-2">Login</h1>
+        <p class="text-lg ">Please sign in to continue.</p>
+
+        <form  method="POST" id="login_form" class="flex flex-col pt-6 pb-8 gap-3">
+            {{ form.hidden_tag() }}
+
+            {% for field in form if field.widget.input_type != 'hidden' %}
+                {% for error in field.errors %}
+                    <span class="">{{ error }}</span>
+                {% endfor %}
+                
+                {{ field(placeholder=field.label.text, class="rounded border-1 border-gray-400 placeholder:text-xs placeholder:font-extrabold placeholder:uppercase placeholder:text-gray-500") }}
+                   
+            {% endfor %}    
+
+            <button class="bg-blue-500 text-white self-end active:bg-blue-600 text-xl mt-2 mb-1 px-8 py-3 rounded-full shadow hover:shadow-lg hover:bg-blue-600 outline-none focus:outline-none ease-linear transition-all duration-150" type="submit">Log in</button>
+        </form>
+    </div>
+    <p class="text-center">Don't have an account? <a href="/signup" class="text-blue-500 font-bold">Sign up</a></p>
+</div>
+{% endblock %}
