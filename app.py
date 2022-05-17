@@ -74,7 +74,7 @@ def login_form():
 
         flash("Invalid credentials.", 'danger')
 
-    return render_template('/login.html', form=form)
+    return render_template('/auth.html', form=form, page='Login')
 
         
 @app.route('/logout')
@@ -108,11 +108,11 @@ def signup_form():
         except exc.IntegrityError:
             db.session.rollback()
             flash('Username or Email already taken', 'danger')
-            return render_template('signup.html', form=form)
+            return render_template('auth.html', form=form, page='Signup')
 
         do_login(user)
 
         return redirect('/')
 
     else: 
-        return render_template('signup.html', form=form)
+        return render_template('auth.html', form=form, page='Signup')
