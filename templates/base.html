@@ -5,16 +5,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{url_for('static',filename='css/main.css')}}">
-    <script src="/static/app.js" defer></script>
+    <script src="https://kit.fontawesome.com/76eb1289db.js" crossorigin="anonymous"></script>
+    <script src="/static/src/app.js" defer></script>
     <title>{% block title %}{% endblock %}</title>
 </head>
 <body>
-    
-    
-    {% for msg in get_flashed_messages() %}
-    <div class="alert alert-danger" role="alert">{{msg}}</div>
-    {% endfor %}
-    <div class="container flex flex-col h-screen bg-slate-100 p-4">
+    <div class="container flex flex-col h-screen">
     {% block content %}{% endblock %}
     </div>
 </body>

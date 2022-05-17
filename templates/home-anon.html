@@ -3,19 +3,24 @@
 {% block title %}Hook - Bringing Musicians Together{% endblock %}
 
 {% block content %}
-<div class="container p-6 bg-white">
+<video id="hero-vid" src="/static/img/vid-bg.mp4" autoplay loop playsinline muted class="object-cover w-full h-full fixed top-0 left-0 right-0 z-0"></video>
+<div class="relative h-full text-center flex items-center justify-center bg-slate-900/50 p-4">
+<div class="flex flex-col items-stretch justify-between h-full px-2 py-8 text-white">
+    <div class="container flex flex-col justify-center h-[90%]">
+        <img src="/static/img/hook-logo-grn.svg" class="box-border h-12 w-36 self-center mb-5" alt="hook">
 
-    
-    <h1 class="text-3xl font-bold underline">Helping musicians find musicians, wherever you are.</h1>
-    <div class="auth_btns">
-        <a href="/login">Log in</a>
-        <p>or</p>
-        <a href="/signup">Sign up</a>
+        <h1 class="text-[2.1rem] leading-tight font-light text-center">Helping musicians find musicians, wherever you are.</h1>
+
+        <div class="auth_btns flex pt-6 pb-8 gap-3 justify-center items-center mt-8">
+            <a href="/login" class="bg-emerald-400 text-black border-emerald-400 border self-end active:bg-emerald-500 text-xl mt-2 px-8 pt-2 pb-3 rounded-full shadow hover:shadow-lg hover:bg-emerald-500 hover:text-white outline-none focus:outline-none mb-1 ease-linear transition-all duration-150">Log in</a>
+            <p>or</p>
+            <a href="/signup" class="bg-transparent text-emerald-400 border-emerald-400 border self-end active:bg-emerald-500 text-xl mt-2 px-8 pt-2 pb-3 rounded-full shadow hover:shadow-lg hover:bg-emerald-500 hover:text-white outline-none focus:outline-none mb-1 ease-linear transition-all duration-150">Sign up</a>
+        </div>
     </div>
-    <p><small>© Hook 2022. All Rights Reserved.</small></p>
-    
+
+    <p class="text-center">© Hook 2022. All Rights Reserved.</p>
     
 </div>
-    
-    
+</div>   
 {% endblock %}
+

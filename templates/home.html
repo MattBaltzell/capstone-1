@@ -1,14 +1,16 @@
-{% extends 'base.html' %}\
+{% extends 'base.html' %}
 
 {% block title %}Hook - Bringing Musicians Together{% endblock %}
 
 {% block content %}
-    <h1>Hook - Bringing Musicians Together</h1>
-    <p>Using this api instead of the Google one.</p>
-    <p><a href="https://www.zipcodeapi.com/API#radius">https://www.zipcodeapi.com/API#radius</a></p>
-    <p><a href="https://rapidapi.com/redline/api/redline-zipcode/pricing">https://rapidapi.com/redline/api/redline-zipcode/pricingfla</a></p>
+
+{% include 'header.html'%}
 
 
-
+<div class="p-6">
+    {% include 'flashed-msgs.html'%}
+    <h1>Welcome, {{g.user.username}}</h1>
+    <a href="/logout" class="text-blue-500 underline">Logout</a>
+</div>
     
 {% endblock %}
