@@ -1,8 +1,8 @@
 import email
 
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, TextAreaField, BooleanField, IntegerField
-from wtforms.validators import DataRequired, Email, Length, Optional
+from wtforms import StringField, PasswordField, BooleanField
+from wtforms.validators import DataRequired, Email, Length
 
 
 class SignupForm(FlaskForm):
