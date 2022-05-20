@@ -1,4 +1,4 @@
-<header class="shadow-lg px-6 pt-8">
+<header class="shadow-lg px-6 pt-8 z-10">
     <div class="flex items-center justify-between">
         <img src="/static/img/hook-logo-grn.svg" class="h-9 w-27 mb-2" alt="hook">
         <div id="header-icons text-slate-100">
@@ -8,9 +8,19 @@
     </div>
     <nav>
         <ul class="flex justify-around text-slate-600">
-            <li class="border-b-[2px] border-emerald-400 py-2 w-[100%] text-center font-[500]"><a href="#">Feed</a></li>
-            <li class="border-b-[2px] border-transparent py-2 w-[100%] text-center font-[500]"><a href="#">Search</a></li>
-            <li class="border-b-[2px] border-transparent py-2 w-[100%] text-center font-[500]"><a href="#">Profile</a></li>
+            <!-- <li class="border-b-[3px] border-emerald-400 py-2 w-[100%] text-center font-[500]"><a href="#">Feed</a></li> -->
+
+            {% if page=='search'%}
+            <li class="border-b-[3px] border-emerald-400 py-2 w-[100%] text-center font-[500]"><a href="/search">Search</a></li>
+            <li class="border-b-[3px] border-transparent py-2 w-[100%] text-center font-[500]"><a href="/users/{{g.user.id}}">Profile</a></li>
+            {% elif page=='profile'%}
+            <li class="border-b-[3px] border-transparent py-2 w-[100%] text-center font-[500]"><a href="/search">Search</a></li>
+            <li class="border-b-[3px] border-emerald-400 py-2 w-[100%] text-center font-[500]"><a href="/users/{{g.user.id}}">Profile</a></li>
+            {% else%}
+            <li class="border-b-[3px] border-transparent py-2 w-[100%] text-center font-[500]"><a href="/search">Search</a></li>
+            <li class="border-b-[3px] border-transparent py-2 w-[100%] text-center font-[500]"><a href="/users/{{g.user.id}}">Profile</a></li>
+            {% endif %}
+            
         </ul>
     </nav>
 </header>
