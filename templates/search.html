@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %}Hook - Bringing Musicians Together{% endblock %}
+
+{% block content %}
+
+{% include 'header.html'%}
+
+
+<div class="p-6">
+    {% include 'flashed-msgs.html'%}
+    <h1 class="text-4xl leading-tight font-light ">Find Musicians!</h1>
+
+    <form method="POST" id="signup_form" class="flex flex-col pt-6 pb-8 gap-3">
+        {{ form.hidden_tag() }}
+
+<!-- INTEGRATE THIS WITH WTFORMS WITH ALL THE INSTRUMENT/GENRE OPTIONS-->
+        <select id="multiple" multiple>
+            <option value="value 1">Guitar</option>
+            <option value="value 2">Drums</option>
+            <option value="value 3">Viola</option>
+            <option value="value 4">Guitar</option>
+            <option value="value 5">Drums</option>
+            <option value="value 6">Viola</option>
+            <option value="value 7">Guitar</option>
+            <option value="value 8">Drums</option>
+            <option value="value 9">Viola</option>
+          </select>
+
+
+
+        {% for field in form if field.widget.input_type != 'hidden' %}
+            {% for error in field.errors %}
+                <span class="">{{ error }}</span>
+            {% endfor %}
+            {% if field.type in ["IntegerRangeField"] %}
+            {{field.label(class="text-xl")}}
+            <div class="radius_text text-6xl">10</div>
+            {{field(min=0, max=100, step=10, class="radius_slider")}}
+            {% else %}
+            {{field.label(class="text-xl")}}
+            {{ field(placeholder=field.label.text, class="rounded border-1 border-slate-400 placeholder:text-xs placeholder:font-extrabold placeholder:uppercase placeholder:text-slate-400 mb-3") }}
+            {% endif %}
+                
+        {% endfor %}    
+
+        <button class="bg-emerald-400 text-white active:bg-emerald-500 text-xl mt-2 px-8 pt-2 pb-3 rounded-full shadow hover:shadow-lg hover:bg-emerald-500 outline-none focus:outline-none mb-1 ease-linear transition-all duration-150" type="submit">Search</button>
+
+    </form>
+    <a href="/logout" class="text-blue-500 underline">Logout</a>
+</div>
+    
+{% endblock %}

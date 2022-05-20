@@ -1,0 +1,42 @@
+{% extends 'base.html'%}
+{% include 'header.html' %}
+{% block title %}Search Results{% endblock %}
+{% block content %}
+<div class="px-0 py-6 bg-slate-800  h-full">
+    {% include 'flashed-msgs.html'%}
+    <h1 class="text-4xl leading-tight font-light mb-5 text-center text-white">Search Results</h1>
+{% for user in users %}
+
+<div class="shadow-md flex flex-col py-3  px-6 mb-2 rounded bg-slate-900 w-full gap-2">
+    <div class="flex gap-2 items-center">
+        <a href="/users/{{user.id}}">
+            <img src="{{user.profile_image}}" class="w-24 h-24 rounded-full bg-blue-400 overflow-hidden object-cover" alt="">
+        </a>
+        <div class="flex gap-3">
+            <div class="text-slate-300">
+                <h2 class="text-xl font-medium">{{user.username.capitalize()}}</h2>
+                <p>{{user.city or user.zip_code}} {{user.state if user.state}}</p>
+                <p>{{user.instruments[0]}}</p>
+            </div>
+        </div>
+    </div>
+    <hr class="border-1 mt-1">
+    <div class="text-slate-300">
+        <p class=""><strong  class="text-sm">Instruments</strong></p>
+        <p class="text-sm">{{user.instruments[0]}}{{"," if user.instruments[1]}} {{user.instruments[1]}}{{"," if user.instruments[2]}} {{user.instruments[2]}}</p>
+    
+        <p class="mt-2"><strong  class="text-sm">Genres</strong></p>
+        <p class="text-sm">{{user.genres[0]}}, {{user.genres[1]}}, {{user.genres[2]}}</p>
+    </div>
+
+    
+</div>
+
+
+
+
+{% endfor%}
+
+<a href="/search" class="bg-emerald-400 block text-white active:bg-emerald-500 text-xl mt-2 px-8 pt-2 pb-3 rounded-full shadow hover:cursor-pointer hover:shadow-lg hover:bg-emerald-500 outline-none focus:outline-none mb-1 ease-linear transition-all duration-150 text-center">New Search</a>
+</div>
+{% endblock %}
