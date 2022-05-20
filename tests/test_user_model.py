@@ -41,8 +41,8 @@ class UserModelTestCase(TestCase):
             username="testuser",
             password="HASHED_PASSWORD",
             is_band=False,
-            image_url=User.image_url.default.arg,
-            header_image_url=User.header_image_url.default.arg,
+            profile_image=User.profile_image.default.arg,
+            header_image=User.header_image.default.arg,
             city='TestCity',
             state='TestState',
             zip_code='12345'
@@ -63,8 +63,8 @@ class UserModelTestCase(TestCase):
         # User __repr__ method should work correctly
         self.assertEqual(u.__repr__(),f'<User #{u.id}: testuser, test@test.com>' )
         self.assertEqual(u.is_band, False)
-        self.assertEqual(u.image_url, "/static/images/default-pic.png")
-        self.assertEqual(u.header_image_url, "/static/images/default-header-pic.jpg")
+        self.assertEqual(u.profile_image, "/static/uploads/default-pic.png")
+        self.assertEqual(u.header_image, "/static/uploads/default-header-pic.jpg")
         self.assertEqual(u.city, "TestCity")
         self.assertEqual(u.state, "TestState")
         self.assertEqual(u.zip_code, "12345")
@@ -78,7 +78,7 @@ class UserModelTestCase(TestCase):
             password="HASHED_PASSWORD",
             zip_code='36832',
             is_band=False,
-            image_url=User.image_url.default.arg
+            profile_image=User.profile_image.default.arg
         )
 
         db.session.add(u)
@@ -88,8 +88,8 @@ class UserModelTestCase(TestCase):
         self.assertEqual(u.email, 'test@test.com')
         self.assertNotEqual(u.password, 'HASHED_PASSWORD')
         self.assertFalse(u.is_band)
-        self.assertEqual(u.image_url, '/static/images/default-pic.png')
-        self.assertEqual(u.header_image_url, '/static/images/default-header-pic.jpg')
+        self.assertEqual(u.profile_image, '/static/uploads/default-pic.png')
+        self.assertEqual(u.header_image, '/static/uploads/default-header-pic.jpg')
         self.assertIsNone(u.city)
         self.assertIsNone(u.state)
         self.assertEqual(u.zip_code, '36832')
@@ -105,7 +105,7 @@ class UserModelTestCase(TestCase):
             password='HASHED_PASSWORD',
             zip_code='36832',
             is_band=True,
-            image_url=User.image_url.default.arg
+            profile_image=User.profile_image.default.arg
         )
 
         db.session.add(u)
@@ -118,8 +118,8 @@ class UserModelTestCase(TestCase):
         self.assertEqual(auth_user.email, 'test@test.com')
         self.assertNotEqual(auth_user.password, 'HASHED_PASSWORD')
         self.assertTrue(auth_user.is_band)
-        self.assertEqual(auth_user.image_url, '/static/images/default-pic.png')
-        self.assertEqual(auth_user.header_image_url, '/static/images/default-header-pic.jpg')
+        self.assertEqual(auth_user.profile_image, '/static/uploads/default-pic.png')
+        self.assertEqual(auth_user.header_image, '/static/uploads/default-header-pic.jpg')
         self.assertIsNone(auth_user.city)
         self.assertIsNone(auth_user.state)
         self.assertEqual(auth_user.zip_code, '36832')

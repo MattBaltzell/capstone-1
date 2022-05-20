@@ -107,14 +107,14 @@ class User(db.Model):
         default=False,
     )
 
-    image_url = db.Column(
+    profile_image = db.Column(
         db.Text,
-        default="/static/images/default-pic.png",
+        default="/static/uploads/default-pic.png",
     )
 
-    header_image_url = db.Column(
+    header_image = db.Column(
         db.Text,
-        default="/static/images/default-header-pic.jpg"
+        default="/static/uploads/default-header-pic.jpg"
     )
 
     bio = db.Column(
@@ -196,7 +196,7 @@ class User(db.Model):
         return len(found_user_list) == 1
 
     @classmethod
-    def signup(cls, username, email, password, zip_code, is_band, image_url):
+    def signup(cls, username, email, password, zip_code, is_band, profile_image):
         """Sign up user.
         Hashes password and adds user to system.
         """
@@ -209,7 +209,7 @@ class User(db.Model):
             password=hashed_pwd,
             zip_code=zip_code,
             is_band=is_band,
-            image_url=image_url,
+            profile_image=profile_image,
         )
 
         db.session.add(user)
