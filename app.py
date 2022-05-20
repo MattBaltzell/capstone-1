@@ -1,10 +1,10 @@
 import os
-
+import requests
 from flask import Flask, render_template, request, flash, redirect, session, g
 from flask_debugtoolbar import DebugToolbarExtension
 from psycopg2 import IntegrityError
 
-from forms import SignupForm, LoginForm
+from forms import SignupForm, LoginForm, SearchForm
 from models import db, connect_db, User, Post, Instrument, Genre, Song, Likes, Follows
 from sqlalchemy import exc
 
@@ -22,6 +22,24 @@ app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', "it's a secret")
 toolbar = DebugToolbarExtension(app)
 
 connect_db(app)
+
+
+filename = 'apikey.txt'
+
+def get_file_contents(filename):
+    """Get contents of a file"""
+    try:
+        with open(filename, 'r') as f:
+            # It's assumed our file contains a single line,
+            # with our API key
+            return f.read().strip()
+    except FileNotFoundError:
+        print("'%s' file not found" % filename)
+
+
+API_KEY = get_file_contents(filename)
+RADIUS_BASE_URL = f'https://www.zipcodeapi.com/rest/{API_KEY}/radius.json'
+
 
 @app.before_request
 def add_user_to_g():
@@ -53,7 +71,7 @@ def home_page():
     if not g.user:
         return render_template('home-anon.html')
     else:    
-        return render_template('home.html')
+        return redirect('/search')
 
 
 
@@ -101,7 +119,7 @@ def signup_form():
                 password=form.password.data, 
                 zip_code=form.zip_code.data, 
                 is_band=form.is_band.data,
-                image_url=User.image_url.default.arg
+                profile_image=User.profile_image.default.arg
             )
             db.session.commit();
         
@@ -116,3 +134,59 @@ def signup_form():
 
     else: 
         return render_template('auth.html', form=form, page='Signup')
+
+
+@app.route('/search', methods=['GET','POST'])
+def search_musicians():
+    """Render search form page."""
+
+    form=SearchForm()   
+    if form.validate_on_submit():
+
+        session["searching_for_band"] = form.is_band.data
+        zip = form.zip_code.data
+        radius = form.radius.data
+
+        resp = requests.get(f"{RADIUS_BASE_URL}/{zip}/{radius}/miles")
+
+        res = resp.json()['zip_codes']
+
+        zips = []
+        zips_all = []
+
+        for zip in res:
+            zips.append(zip['zip_code'])
+            zips_all.append(zip)
+
+        session['response_zip_codes'] = zips
+
+        print('=====================================')
+        print(zips_all)
+        print('=====================================')
+        print('=====================================')
+        
+        return redirect ('/results')
+
+    else:
+        return render_template('search.html', form=form, page='search')
+
+    
+
+
+@app.route('/results')
+def search_results():
+    """Display search results on the page"""
+    
+    users = User.query.filter(User.zip_code.in_(session["response_zip_codes"]),User.is_band == session["searching_for_band"])
+    
+    return render_template('search-results.html', users=users, page='search')
+
+
+
+@app.route('/users/<int:user_id>')
+def user_profile(user_id):
+    """Render a user's profile"""
+
+    user = User.query.get_or_404(user_id)
+
+    return render_template('profile.html', user=user,page='profile')
