@@ -1,5 +1,5 @@
 from datetime import datetime
-
+from flask import g
 from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
 
@@ -195,8 +195,10 @@ class User(db.Model):
         found_user_list = [user for user in self.following if user == other_user]
         return len(found_user_list) == 1
 
+    
+
     @classmethod
-    def signup(cls, username, email, password, zip_code, is_band, profile_image):
+    def signup(cls, username, email, password, city, state, zip_code, is_band, profile_image, header_image):
         """Sign up user.
         Hashes password and adds user to system.
         """
@@ -207,9 +209,12 @@ class User(db.Model):
             username=username,
             email=email,
             password=hashed_pwd,
+            city=city,
+            state=state,
             zip_code=zip_code,
             is_band=is_band,
-            profile_image=profile_image,
+            profile_image=profile_image or User.profile_image.default.arg,
+            header_image=header_image or User.header_image.default.arg,
         )
 
         db.session.add(user)
@@ -330,6 +335,17 @@ class User_Genre(db.Model):
         nullable=False,
     )
 
+    @classmethod
+    def add_genre_to_user(self,user_id,genre_id):
+        """Add genre to user"""
+
+        if user_id == g.user.id: 
+            new_user_genre = User_Genre(user_id=user_id,genre_id=genre_id)
+            db.session.add(new_user_genre)
+            return new_user_genre
+        else:
+            return None
+
 
 class Instrument(db.Model):
     """"""
@@ -368,6 +384,17 @@ class User_Instrument(db.Model):
         db.ForeignKey('instruments.id'),
         nullable=False,
     )
+
+    @classmethod
+    def add_instrument_to_user(self,user_id,instrument_id):
+        """Add instrument to user"""
+
+        if user_id == g.user.id: 
+            new_user_instrument = User_Instrument(user_id=user_id,instrument_id=instrument_id)
+            db.session.add(new_user_instrument)
+            return new_user_instrument
+        else:
+            return None
 
 
 def connect_db(app):
