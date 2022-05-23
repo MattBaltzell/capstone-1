@@ -6,40 +6,74 @@
 
 {% block content %}
 
-<div class="class=bg-[url({{user.header_image}})] bg-blue-400 w-full h-[7rem] bg-cover p-6">
-    <header class="flex mt-14 items-center gap-3">
-        <img src={{user.profile_image}} alt={{user.username}}  class="w-[7rem] h-[7rem] ml-[-10px] rounded-full bg-red-400 overflow-hidden border-[3px] border-white">
-        <div class="mt-4">
-            <h1 class="text-2xl font-medium">{{user.username}}</h1>
-            <p class="text-md ">{{user.city}}, {{user.state}} {{user.zip_code}}</p>
+<main>
+    <img src={{user.header_image}} alt={{user.username}}  class="w-full h-[9rem] object-cover ">
+        <div class="p-6 mt-[-8rem]">
+        <div class="flex flex-col mt-6 items-center gap-2">
+            
+            <img src={{user.profile_image}} alt={{user.username}}  class="w-40 h-40 rounded-full bg-red-400 overflow-hidden border-[3px] border-white">
+            
+            <h1 class="text-3xl font-medium ">{{user.username}}</h1>
+                
+            
         </div>
-    </header>
-    <main >
-        <div id="bio" class="mt-3">
-            <h2 class="text-lg font-medium">Bio</h2>
-            <div class="flex mt-1">    
+        <div id="profile_buttons" class="flex items-center gap-2 mt-6 ">
+            {% if user == curr_user %}
+            <a href="/users/edit" class="block py-1 px-3 bg-emerald-400 hover:bg-emerald-500 rounded-md w-full text-center ease-linear transition-all duration-150">
+                <p class="text-white"><i class="fa-solid fa-user text-sm pr-1"></i>Edit Profile</p>
+            </a>
+            {% else %}
+            <a href="#" class="block py-1 px-3 bg-emerald-400 hover:bg-emerald-500 rounded-md w-full text-center ease-linear transition-all duration-150">
+                <p class="text-white"><i class="fa-solid fa-user text-sm pr-1"></i> Follow</p>
+            </a>
+            <a href="#" class="block py-1 px-3 bg-emerald-400 hover:bg-emerald-500 rounded-md w-full text-center ease-linear transition-all duration-150">
+                <p class="text-white"><i class="fa-solid fa-message text-sm pr-1"></i> Message</p>
+            </a>
+            {% endif %}
+        </div>
+
+        <hr class="border-1 border-emerald-200 mt-5 mb-4">
+
+        <div id="address">
+            <div class="flex flex-wrap mt-1 gap-2 items-center">    
+                <p class="text-md"><span><i class="fa-solid fa-location-dot text-emerald-400 text-md w-[15px]"></i></span> {{user.city}}, {{user.state}} {{user.zip_code}}</p>
+            </div>
+        </div>
+
+        <div id="instruments" class="mt-1">
+            <div class="flex flex-wrap mt-1 gap-2 items-center ">    
+                <p class="text-md "><span><i class="fa-solid fa-guitar text-emerald-400 text-md w-[15px]"></i></span> 
+                    {% for inst in user.instruments%}
+                    {{inst.name.title()}}{% if not loop.last %},{% endif %}
+                    {% endfor %}
+                </p>
+            </div>
+        </div>
+
+        <div id="genres" class="mt-1">
+            <div class="flex flex-wrap mt-1 gap-2 items-center">    
+                <i class="fa-solid fa-music text-emerald-400 text-md w-[15px]"></i>
+                <p class="text-md">
+                    {% for g in user.genres%}
+                    {{g.name.title()}}{% if not loop.last %},{% endif %}
+                    {% endfor %}
+                </p>
+            </div>
+        </div>
+
+        <hr class="border-1 border-emerald-200 mt-5 mb-4">
+        
+
+        
+        <div id="bio" class="mt-1">
+            <h2 class="text-2xl font-medium">Bio</h2>
+            <div class="flex text-lg mt-1">    
                 <p class="">{{user.bio}}</p>
             </div>
         </div>
-        <div id="instruments" class="mt-3">
-            <h2 class="text-lg font-medium">Instruments Played</h2>
-            <div class="flex flex-wrap gap-1 mt-1">    
-                {% for inst in user.instruments %}
-                <p class="block px-2 py-1 rounded-lg bg-slate-400 text-white text-sm">{{inst}}</p>
-                {% endfor %}
-            </div>
-        </div>
-        <div id="genres" class="mt-3">
-            <h2 class="text-lg font-medium">Genres</h2>
-            <div class="flex flex-wrap gap-1 mt-1">    
-                {% for genre in user.genres %}
-                <p class="block px-2 py-1 rounded-lg bg-slate-400 text-white text-sm">{{genre}}</p>
-                {% endfor %}
-            </div>
-        </div>
-        
-    </main>
-</div>
+
+    </div>
+</main>
 
 
 

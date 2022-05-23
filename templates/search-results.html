@@ -16,17 +16,24 @@
             <div class="text-slate-300">
                 <h2 class="text-xl font-medium">{{user.username.capitalize()}}</h2>
                 <p>{{user.city or user.zip_code}} {{user.state if user.state}}</p>
-                <p>{{user.instruments[0]}}</p>
             </div>
         </div>
     </div>
     <hr class="border-1 mt-1">
     <div class="text-slate-300">
         <p class=""><strong  class="text-sm">Instruments</strong></p>
-        <p class="text-sm">{{user.instruments[0]}}{{"," if user.instruments[1]}} {{user.instruments[1]}}{{"," if user.instruments[2]}} {{user.instruments[2]}}</p>
+        <p class="text-sm">
+            {% for inst in user.instruments%}
+            {{inst.name.title()}}{% if not loop.last %},{% endif %}
+            {% endfor %}
+            </p>
     
         <p class="mt-2"><strong  class="text-sm">Genres</strong></p>
-        <p class="text-sm">{{user.genres[0]}}, {{user.genres[1]}}, {{user.genres[2]}}</p>
+        <p class="text-sm">
+            {% for g in user.genres%}
+            {{g.name.title()}}{% if not loop.last %},{% endif %}
+            {% endfor %}
+        </p>
     </div>
 
     

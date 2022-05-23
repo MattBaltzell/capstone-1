@@ -1,0 +1,47 @@
+{% extends 'base.html'%}
+{% include 'header.html' %}
+{% block title %}Edit Profile{% endblock %}
+{% block content %}
+<div class="p-6 h-full">
+    {% include 'flashed-msgs.html'%}
+    <h1 class="text-5xl leading-tight font-light mb-5">Edit Profile</h1>
+
+    <form method="POST" id="user_form" class="w-full">
+        {{ form.hidden_tag() }}
+
+        {% for field in form if field.widget.input_type != 'hidden' and field.name != 'password' %}
+          {% for error in field.errors %}
+            <span class="text-danger">{{ error }}</span>
+          {% endfor %}
+        <div class="flex flex-col my-4">
+            {{field.label(class="mb-1")}}
+            {{ field(placeholder=field.label.text, class="form-control rounded") }}
+            {% if field.name == 'profile_image' or field.name == 'zip_code' or field.name == 'genres'
+            or field.name == 'bio'%}
+            <hr class="border-1 border-emerald-200 mt-6 mb-1">
+            {% endif %} 
+
+        </div>
+        {% endfor %}
+        
+        <div class="">
+
+            <p class="mb-1">To confirm changes, enter your password:</p>
+            {% if form.password.errors %}
+                {% for error in form.password.errors %}
+                <span class="text-danger">
+                {{ error }}
+                </span>
+                {% endfor %}
+            {% endif %}
+
+            {{ form.password(placeholder="Enter your password to confirm", class="w-full rounded") }}
+            
+            <div class="flex items-center gap-5 pt-3 pb-10">
+                <button class="bg-emerald-400 text-white self-end active:bg-emerald-500 text-xl mt-2 px-8 pt-2 pb-3 rounded-full shadow hover:shadow-lg hover:bg-emerald-500 outline-none focus:outline-none mb-1 ease-linear transition-all duration-150">Edit user</button>
+                <a href="/users/{{ user_id }}" class="text-emerald-400 underline text-xl">Cancel</a>
+            </div>
+        </div>
+    </form>
+</div>
+  {% endblock %}

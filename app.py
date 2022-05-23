@@ -4,8 +4,8 @@ from flask import Flask, render_template, request, flash, redirect, session, g
 from flask_debugtoolbar import DebugToolbarExtension
 from psycopg2 import IntegrityError
 
-from forms import SignupForm, LoginForm, SearchForm
-from models import db, connect_db, User, Post, Instrument, Genre, Song, Likes, Follows
+from forms import SignupForm, LoginForm, SearchForm, EditProfileForm
+from models import  db, connect_db, User, Post, Instrument, Genre, Song, Likes, Follows, User_Instrument, User_Genre
 from sqlalchemy import exc
 
 CURR_USER_KEY = "curr_user"
@@ -25,6 +25,7 @@ connect_db(app)
 
 
 filename = 'apikey.txt'
+
 
 def get_file_contents(filename):
     """Get contents of a file"""
@@ -115,10 +116,13 @@ def signup_form():
         try:
             user = User.signup(
                 username=form.username.data, 
-                email=form.username.data, 
+                email=form.email.data, 
                 password=form.password.data, 
+                city=form.city.data, 
+                state=form.state.data, 
                 zip_code=form.zip_code.data, 
                 is_band=form.is_band.data,
+                header_image=User.header_image.default.arg,
                 profile_image=User.profile_image.default.arg
             )
             db.session.commit();
@@ -140,6 +144,9 @@ def signup_form():
 def search_musicians():
     """Render search form page."""
 
+    if not g.user:
+        return render_template('home-anon.html')
+
     form=SearchForm()   
     if form.validate_on_submit():
 
@@ -160,11 +167,6 @@ def search_musicians():
 
         session['response_zip_codes'] = zips
 
-        print('=====================================')
-        print(zips_all)
-        print('=====================================')
-        print('=====================================')
-        
         return redirect ('/results')
 
     else:
@@ -177,6 +179,9 @@ def search_musicians():
 def search_results():
     """Display search results on the page"""
     
+    if not g.user:
+        return render_template('home-anon.html')
+
     users = User.query.filter(User.zip_code.in_(session["response_zip_codes"]),User.is_band == session["searching_for_band"])
     
     return render_template('search-results.html', users=users, page='search')
@@ -187,6 +192,57 @@ def search_results():
 def user_profile(user_id):
     """Render a user's profile"""
 
-    user = User.query.get_or_404(user_id)
+    if not g.user:
+        return render_template('home-anon.html')
 
-    return render_template('profile.html', user=user,page='profile')
+    user = User.query.get_or_404(user_id)
+    curr_user = g.user
+
+    return render_template('profile.html', user=user,curr_user=curr_user, page='profile')
+
+
+@app.route('/users/edit', methods=['GET','POST'])
+def edit_user_profile():
+    """Render form to edit current user's profile. Submit form and redirect to profile page"""
+
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/users/{g.user.id}")
+
+    form = EditProfileForm(obj=g.user)
+
+    
+    if form.validate_on_submit():
+        
+        user = User.authenticate(g.user.username,form.password.data)
+
+        if user:
+            g.user.header_image = form.header_image.data or User.header_image.default.arg
+            g.user.profile_image = form.profile_image.data or User.profile_image.default.arg
+            g.user.username = form.username.data
+            g.user.email = form.email.data
+            g.user.bio = form.bio.data
+
+            for instrument in form.instruments.data:
+
+                inst = Instrument.query.filter_by(name = instrument).one()
+                User_Instrument.add_instrument_to_user(user_id=user.id, instrument_id=inst.id)
+
+                db.session.add(inst)
+
+            for genre in form.genres.data:
+    
+                inst = Genre.query.filter_by(name = genre).one()
+                User_Genre.add_genre_to_user(user_id=user.id, genre_id=inst.id)
+
+                db.session.add(inst)
+            
+            db.session.commit()
+            return redirect(f"/users/{user.id}")
+        
+        flash("You entered the wrong password!")
+        return redirect('/')
+    else:
+        
+        print(form.errors)
+        return render_template('edit.html', form=form, page='profile')

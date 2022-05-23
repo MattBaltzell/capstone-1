@@ -1,7 +1,8 @@
 import email
 
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, IntegerRangeField, RadioField
+from models import Instrument, Genre
+from wtforms import StringField, PasswordField, BooleanField, IntegerRangeField, RadioField, TextAreaField, SelectMultipleField, FileField
 from wtforms.validators import DataRequired, Email, Length
 
 
@@ -11,18 +12,43 @@ class SignupForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     email = StringField('E-mail', validators=[Email(),DataRequired()])
     password = PasswordField('Password', validators=[Length(min=6)])
+    city = StringField('City', validators=[DataRequired()])
+    state = StringField('State', validators=[Length(min=2,max=2,message='Use abbreviated state name (AL, CA, NY, TX).'),DataRequired()])
     zip_code = StringField('Zip Code', validators=[Length(min=5,max=5,message='Please enter a valid zip code.')])
     is_band = BooleanField('Is this a band page?')
 
-# class EditProfileForm(FlaskForm):
-#     """Form for editing logged-in user's profile"""
+GENRE_CHOICES = "generator/genres.txt"
+INSTRUMENT_CHOICES = "generator/instruments.txt"
 
-#     username = StringField('Username', validators=[DataRequired()])
-#     email = StringField('E-mail', validators=[Email(),DataRequired()])
-#     city = StringField('City', validators=[Length(min=2),DataRequired()]))
-#     state = StringField('State', validators=[Length(min=2,max=2,message='Please abbreviate the state (e.g. WA, CA, NY).'),DataRequired()])
-#     zip_code = StringField('Zip Code', validators=[Length(min=5,max=5,message='Please enter a valid zip code.'),DataRequired()])
-#     is_band = BooleanField('Is this a band page?', validators=[DataRequired()])
+def create_multiform_choices(choices_file):
+    file = choices_file
+    result = []
+    with open(file, "r") as choices:
+        for choice in choices.readlines():
+            
+            try:
+                  result.append((choice.strip(), choice.strip().title()))
+            except:pass
+    return result
+
+instrument_choices = create_multiform_choices(INSTRUMENT_CHOICES)
+genre_choices = create_multiform_choices(GENRE_CHOICES)
+
+
+class EditProfileForm(FlaskForm):
+    """Form for editing logged-in user's profile"""
+
+    header_image = FileField()
+    profile_image = FileField()
+    username = StringField('Username', validators=[DataRequired()])
+    email = StringField('E-mail', validators=[Email(),DataRequired()])
+    city = StringField('City', validators=[Length(min=2),DataRequired()])
+    state = StringField('State', validators=[Length(min=2,max=2,message='Please abbreviate the state (e.g. WA, CA, NY).'),DataRequired()])
+    zip_code = StringField('Zip Code', validators=[Length(min=5,max=5,message='Please enter a valid zip code.'),DataRequired()])
+    instruments = SelectMultipleField('Instruments', id='instruments', choices=instrument_choices)
+    genres = SelectMultipleField('Genres', id='genres', choices=genre_choices)
+    bio = TextAreaField('Bio',render_kw={"rows": 5, "cols": 11})
+    password = PasswordField('Password', validators=[Length(min=6)])
 
 
 
