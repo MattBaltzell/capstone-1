@@ -2,6 +2,7 @@ const heroVid = document.getElementById('hero-vid')
 const body = document.querySelector('body')
 const radiusText = document.querySelector('.radius_text')
 const radiusSlider = document.querySelector('.radius_slider')
+const editForm = document.getElementById('user_form')
 
 // Slow home page bg video down
 if (heroVid){
@@ -23,6 +24,10 @@ body.addEventListener('input', function(e){
 }) 
 
 
-new SlimSelect({
-    select: '#multiple'
-  })
+const instrument_select = new SlimSelect({
+    select: '#instruments'
+})
+
+const genre_select = new SlimSelect({
+    select: '#genres'
+})
