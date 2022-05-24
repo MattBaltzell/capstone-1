@@ -17,10 +17,15 @@ function closeFlashedMsg(e){
     e.target.closest('.flash-msg').outerHTML = '';
 }
 
+function updateRadiusText(){
+    radiusText.textContent = radiusSlider.value
+}
+
+window.addEventListener('load',updateRadiusText)
 
 body.addEventListener('input', function(e){
     if(!radiusSlider) return;
-    radiusText.textContent = radiusSlider.value
+    updateRadiusText();
 }) 
 
 
