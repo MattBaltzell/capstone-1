@@ -1,5 +1,4 @@
 import email
-
 from flask_wtf import FlaskForm
 from models import Instrument, Genre
 from wtforms import StringField, PasswordField, BooleanField, IntegerRangeField, RadioField, TextAreaField, SelectMultipleField, FileField, SelectField
@@ -21,11 +20,12 @@ GENRE_CHOICES = "generator/genres.txt"
 INSTRUMENT_CHOICES = "generator/instruments.txt"
 
 def create_multiform_choices(choices_file):
+    """Create choice tuples to use as multiform choices."""
+
     file = choices_file
     result = []
     with open(file, "r") as choices:
         for choice in choices.readlines():
-            
             try:
                   result.append((choice.strip(), choice.strip().title()))
             except:pass
@@ -51,7 +51,6 @@ class EditProfileForm(FlaskForm):
     password = PasswordField('Password', validators=[Length(min=6)])
 
 
-
 class LoginForm(FlaskForm):
     """Login form."""
 
@@ -68,6 +67,5 @@ class SearchForm(FlaskForm):
     default=False, validators=[DataRequired()])
     instruments = SelectField('Instrument Played', id='instruments-search', choices=instrument_choices)
     genres = SelectField('Genre Played', id='genres-search', choices=genre_choices)
-
     zip_code = StringField('Zip Code', validators=[Length(min=5,max=5,message='Please enter a valid zip code.')])
     radius = IntegerRangeField('Radius in Miles', default=10)
