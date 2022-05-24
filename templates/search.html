@@ -14,28 +14,13 @@
     <form method="POST" id="signup_form" class="flex flex-col pt-6 pb-8 gap-3">
         {{ form.hidden_tag() }}
 
-<!-- INTEGRATE THIS WITH WTFORMS AND SLIMSELECTJS -->
-        <select id="multiple" multiple>
-            <option value="value 1">Guitar</option>
-            <option value="value 2">Drums</option>
-            <option value="value 3">Viola</option>
-            <option value="value 4">Guitar</option>
-            <option value="value 5">Drums</option>
-            <option value="value 6">Viola</option>
-            <option value="value 7">Guitar</option>
-            <option value="value 8">Drums</option>
-            <option value="value 9">Viola</option>
-          </select>
-
-
-
         {% for field in form if field.widget.input_type != 'hidden' %}
             {% for error in field.errors %}
                 <span class="">{{ error }}</span>
             {% endfor %}
             {% if field.type in ["IntegerRangeField"] %}
             {{field.label(class="text-xl")}}
-            <div class="radius_text text-6xl">10</div>
+            <div class="radius_text text-6xl"></div>
             {{field(min=0, max=100, step=10, class="radius_slider")}}
             {% else %}
             {{field.label(class="text-xl")}}

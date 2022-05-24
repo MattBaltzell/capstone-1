@@ -151,6 +151,8 @@ def search_musicians():
     if form.validate_on_submit():
 
         session["searching_for_band"] = form.is_band.data
+        session["searching_instrument"] = form.instruments.data
+        session["searching_genre"] = form.genres.data
         zip = form.zip_code.data
         radius = form.radius.data
 
@@ -182,7 +184,14 @@ def search_results():
     if not g.user:
         return render_template('home-anon.html')
 
-    users = User.query.filter(User.zip_code.in_(session["response_zip_codes"]),User.is_band == session["searching_for_band"])
+    instrument = Instrument.query.filter_by(name = session["searching_instrument"]).one()
+    genre = Genre.query.filter_by(name = session["searching_genre"]).one()
+
+    users = db.session.query(User).filter(
+        User.zip_code.in_(session["response_zip_codes"]),
+        User.is_band == session["searching_for_band"], 
+        User.instruments.any(Instrument.id == instrument.id),
+        User.genres.any(Genre.id == genre.id))
     
     return render_template('search-results.html', users=users, page='search')
 

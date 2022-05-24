@@ -2,7 +2,7 @@ import email
 
 from flask_wtf import FlaskForm
 from models import Instrument, Genre
-from wtforms import StringField, PasswordField, BooleanField, IntegerRangeField, RadioField, TextAreaField, SelectMultipleField, FileField
+from wtforms import StringField, PasswordField, BooleanField, IntegerRangeField, RadioField, TextAreaField, SelectMultipleField, FileField, SelectField
 from wtforms.validators import DataRequired, Email, Length
 
 
@@ -66,5 +66,8 @@ class SearchForm(FlaskForm):
     (False, 'Musicians'),
     (True, 'Bands')],
     default=False, validators=[DataRequired()])
+    instruments = SelectField('Instrument Played', id='instruments-search', choices=instrument_choices)
+    genres = SelectField('Genre Played', id='genres-search', choices=genre_choices)
+
     zip_code = StringField('Zip Code', validators=[Length(min=5,max=5,message='Please enter a valid zip code.')])
     radius = IntegerRangeField('Radius in Miles', default=10)
