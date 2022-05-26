@@ -5,7 +5,10 @@ from flask_debugtoolbar import DebugToolbarExtension
 from psycopg2 import IntegrityError
 
 from forms import SignupForm, LoginForm, SearchForm, EditProfileForm
-from models import  db, connect_db, User, Post, Instrument, Genre, Song, Likes, Follows, User_Instrument, User_Genre
+from models import  db, connect_db, User,  Instrument, Genre, Follows, User_Instrument, User_Genre
+from flask_uploads import configure_uploads, IMAGES, UploadSet
+from werkzeug.utils import secure_filename
+import uuid as uuid
 from sqlalchemy import exc
 
 CURR_USER_KEY = "curr_user"
@@ -19,6 +22,11 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = False
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', "it's a secret")
+
+BASE_DIRECTORY = 'http://127.0.0.1:5000/'
+UPLOAD_FOLDER = 'static/uploads/'
+app.config['UPLOAD_FOLDER']=UPLOAD_FOLDER
+
 toolbar = DebugToolbarExtension(app)
 
 connect_db(app)
@@ -88,11 +96,11 @@ def login_form():
 
         if user:
             do_login(user)
-            flash(f"Hello, {user.username}!", "success")
+            flash(f"Hello, {user.username}!", "info")
             return redirect("/")
 
         flash("Invalid credentials.", 'danger')
-
+    
     return render_template('/auth.html', form=form, page='Login')
 
         
@@ -101,9 +109,9 @@ def logout():
     """Log user out and redirect to login."""
 
     do_logout()
-    flash('Successfully logged out.')
+    flash('Successfully logged out.','info')
 
-    return redirect('/login')
+    return redirect('/')
 
 
 @app.route('/signup', methods=['GET','POST'])
@@ -161,11 +169,9 @@ def search_musicians():
         res = resp.json()['zip_codes']
 
         zips = []
-        zips_all = []
 
         for zip in res:
             zips.append(zip['zip_code'])
-            zips_all.append(zip)
 
         session['response_zip_codes'] = zips
 
@@ -213,45 +219,96 @@ def user_profile(user_id):
 @app.route('/users/edit', methods=['GET','POST'])
 def edit_user_profile():
     """Render form to edit current user's profile. Submit form and redirect to profile page"""
-
+ 
     if not g.user:
         flash("Access unauthorized.", "danger")
         return redirect("/users/{g.user.id}")
 
     form = EditProfileForm(obj=g.user)
-
     
     if form.validate_on_submit():
         
         user = User.authenticate(g.user.username,form.password.data)
 
         if user:
-            g.user.header_image = form.header_image.data or User.header_image.default.arg
-            g.user.profile_image = form.profile_image.data or User.profile_image.default.arg
+            
+            # Upload header image
+            if request.files['header_image']:
+                
+                updated_header_img = request.files['header_image']
+                
+                # Grab Image Names
+                header_img_filename = secure_filename(updated_header_img.filename)
+                
+                # Set UUID
+                header_img_uuid_name = str(uuid.uuid1()) + "_" + header_img_filename
+
+                #Save Images
+                updated_header_img.save(os.path.join(app.config['UPLOAD_FOLDER'],header_img_uuid_name))
+
+                #Change it to a string to save to db
+                header_img_filename = BASE_DIRECTORY + UPLOAD_FOLDER + header_img_uuid_name
+
+                g.user.header_image =  header_img_filename or User.header_image.default.arg
+            
+
+            # Upload profile image
+            if request.files['profile_image']:
+
+                updated_profile_img = request.files['profile_image'] 
+                
+                # Grab Image Names
+                profile_img_filename = secure_filename(updated_profile_img.filename)
+
+                # Set UUID
+                profile_img_uuid_name = str(uuid.uuid1()) + "_" + profile_img_filename
+
+                #Save Images
+                updated_profile_img.save(os.path.join(app.config['UPLOAD_FOLDER'],profile_img_uuid_name))
+
+                #Change it to a string to save to db
+                profile_img_filename = BASE_DIRECTORY +UPLOAD_FOLDER + profile_img_uuid_name
+
+                g.user.profile_image = profile_img_filename or User.profile_image.default.arg
+
+
+            # Update username, email, and bio from form data
             g.user.username = form.username.data
             g.user.email = form.email.data
             g.user.bio = form.bio.data
+            
+            # Clear current user's instruments list before adding form data
+            g.user.instruments = []
 
+            # Add form data to add instruments to current user's list
             for instrument in form.instruments.data:
 
                 inst = Instrument.query.filter_by(name = instrument).one()
                 User_Instrument.add_instrument_to_user(user_id=user.id, instrument_id=inst.id)
-
                 db.session.add(inst)
 
+            # Clear current user's genres list before adding form data
+            g.user.genres = []
+
+            # Add form data to add instruments to current user's list
             for genre in form.genres.data:
     
-                inst = Genre.query.filter_by(name = genre).one()
-                User_Genre.add_genre_to_user(user_id=user.id, genre_id=inst.id)
-
-                db.session.add(inst)
+                gen = Genre.query.filter_by(name = genre).one()
+                User_Genre.add_genre_to_user(user_id=user.id, genre_id=gen.id)
+                db.session.add(gen)
             
             db.session.commit()
+
+            print(form.errors)
+            flash('Successfully updated profile.', 'success')
             return redirect(f"/users/{user.id}")
         
-        flash("You entered the wrong password!")
-        return redirect('/')
+        flash("You entered the wrong password!","error")
+        return redirect(request.url)
     else:
+        # Update form fields with user data for instruments and genres
+        form.instruments.data = [instrument.name for instrument in g.user.instruments]
+        form.genres.data = [genre.name for genre in g.user.genres]
         
         print(form.errors)
-        return render_template('edit.html', form=form, page='profile')
+        return render_template('edit.html', form=form, page='profile',user=g.user)
