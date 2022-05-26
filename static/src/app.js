@@ -4,10 +4,8 @@ const radiusText = document.querySelector('.radius_text')
 const radiusSlider = document.querySelector('.radius_slider')
 const editForm = document.getElementById('user_form')
 
-// Slow home page bg video down
-if (heroVid){
-    heroVid.playbackRate = .6;
-}
+//Slow down the home page bg video
+if (heroVid){heroVid.playbackRate = .6}
 
 
 body.addEventListener('click', closeFlashedMsg)
@@ -36,3 +34,17 @@ const instrument_select = new SlimSelect({
 const genre_select = new SlimSelect({
     select: '#genres'
 })
+
+
+const instrument_search = new SlimSelect({
+    select: '#instruments-search'
+})
+
+const genre_search = new SlimSelect({
+    select: '#genres-search'
+})
+
+
+  
+// Array of objects - Must have at least text value
+instrument_select.selected()
