@@ -2,14 +2,12 @@
     <div class="flex items-center justify-between">
         <img src="/static/img/hook-logo-grn.svg" class="h-9 w-27 mb-2" alt="hook">
         <div id="header-icons text-slate-100">
-            <i class="fa-solid fa-pen-to-square text-slate-600 text-xl pr-4"></i>
-            <i class="fa-solid fa-ellipsis-vertical text-slate-600 text-xl"></i>
+            <a href="#"><span class="pr-2">Menu</span><i class="fa-solid fa-ellipsis-vertical text-slate-600 text-xl"></i></a>
         </div>
     </div>
     <nav>
         <ul class="flex justify-around text-slate-600">
-            <!-- <li class="border-b-[3px] border-emerald-400 py-2 w-[100%] text-center font-[500]"><a href="#">Feed</a></li> -->
-
+          
             {% if page=='search'%}
             <li class="border-b-[3px] border-emerald-400 py-2 w-[100%] text-center font-[500]"><a href="/search">Search</a></li>
             <li class="border-b-[3px] border-transparent py-2 w-[100%] text-center font-[500]"><a href="/users/{{g.user.id}}">Profile</a></li>
