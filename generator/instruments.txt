@@ -26,3 +26,4 @@ turntable
 ukulele
 violin
 viola
+vocals
