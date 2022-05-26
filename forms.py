@@ -1,7 +1,8 @@
 import email
 from flask_wtf import FlaskForm
+from flask_wtf.file import FileField
 from models import Instrument, Genre
-from wtforms import StringField, PasswordField, BooleanField, IntegerRangeField, RadioField, TextAreaField, SelectMultipleField, FileField, SelectField
+from wtforms import StringField, PasswordField, BooleanField, IntegerRangeField, RadioField, TextAreaField, SelectMultipleField, SelectField
 from wtforms.validators import DataRequired, Email, Length
 
 
@@ -38,8 +39,8 @@ genre_choices = create_multiform_choices(GENRE_CHOICES)
 class EditProfileForm(FlaskForm):
     """Form for editing logged-in user's profile"""
 
-    header_image = FileField()
-    profile_image = FileField()
+    header_image = FileField('Header Image')
+    profile_image = FileField('Profile Image')
     username = StringField('Username', validators=[DataRequired()])
     email = StringField('E-mail', validators=[Email(),DataRequired()])
     city = StringField('City', validators=[Length(min=2),DataRequired()])
