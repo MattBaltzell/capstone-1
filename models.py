@@ -108,12 +108,14 @@ class User(db.Model):
     )
 
     profile_image = db.Column(
-        db.Text,
+        db.String(),
+        nullable=True,
         default="/static/uploads/default-pic.png",
     )
 
     header_image = db.Column(
-        db.Text,
+        db.String(),
+        nullable=True,
         default="/static/uploads/default-header-pic.jpg"
     )
 
@@ -292,7 +294,7 @@ class Post(db.Model):
     )
 
 
-    user = db.relationship('User')
+    user = db.relationship('User', overlaps='posts')
 
 
 
@@ -325,7 +327,7 @@ class User_Genre(db.Model):
 
     user_id = db.Column(
         db.Integer,
-        db.ForeignKey('users.id'),
+        db.ForeignKey('users.id', ondelete='CASCADE'),
         nullable=False,
     )
 
@@ -346,7 +348,7 @@ class User_Genre(db.Model):
         else:
             return None
 
-
+    
 class Instrument(db.Model):
     """"""
 
@@ -375,7 +377,7 @@ class User_Instrument(db.Model):
 
     user_id = db.Column(
         db.Integer,
-        db.ForeignKey('users.id'),
+        db.ForeignKey('users.id', ondelete='CASCADE'),
         nullable=False,
     )
 
@@ -395,6 +397,43 @@ class User_Instrument(db.Model):
             return new_user_instrument
         else:
             return None
+
+class Message(db.Model):
+    """Messages"""
+
+    __tablename__ = 'messages'
+
+    id = db.Column(
+        db.Integer,
+        primary_key=True,
+        autoincrement=True
+    )
+
+    sender_id = db.Column(
+        db.Integer,
+        db.ForeignKey('users.id', ondelete="cascade")
+    )
+
+    recipient_id = db.Column(
+        db.Integer,
+        db.ForeignKey('users.id', ondelete="cascade")
+    )
+
+    subject = db.Column(
+        db.Text,
+        nullable=False,
+    )
+
+    body = db.Column(
+        db.String(140),
+        nullable=False,
+    )
+
+    timestamp = db.Column(
+        db.DateTime, 
+        index=True, 
+        default=datetime.utcnow
+    )
 
 
 def connect_db(app):
