@@ -1,3 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.ss-main .ss-multi-selected .ss-values .ss-value{
+    background-color: rgb(52 211 153);
+}
