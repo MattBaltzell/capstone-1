@@ -1,3 +1,29 @@
-{% for msg in get_flashed_messages() %}
-<div class="flex items-center justify-between flash-msg bg-emerald-300 w-full p-4 text-black text-center rounded mb-5" role="alert">{{msg}}<i class="fa-solid fa-xmark text-xl flash-close"></i></div>
-{% endfor %}
+{% with messages = get_flashed_messages(category_filter=["danger"]) %}
+    {% if messages %}
+        {% for msg in messages %}
+
+        <div class="flex items-center justify-between flash-msg bg-red-300 w-full p-4 text-black text-center rounded mb-5  shadow-lg" role="alert">{{msg}}<i class="fa-solid fa-xmark text-xl flash-close"></i></div>
+
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+{% with messages = get_flashed_messages(category_filter=["success"]) %}
+    {% if messages %}
+        {% for msg in messages %}
+
+        <div class="flex items-center justify-between flash-msg bg-emerald-200 w-full p-4 text-black text-center rounded mb-5  shadow-lg" role="alert">{{msg}}<i class="fa-solid fa-xmark text-xl flash-close"></i></div>
+
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+{% with messages = get_flashed_messages(category_filter=["info"]) %}
+    {% if messages %}
+        {% for msg in messages %}
+
+        <div class="flex items-center justify-between flash-msg bg-slate-200 w-full p-4 text-black text-center rounded mb-5  shadow-lg" role="alert">{{msg}}<i class="fa-solid fa-xmark text-xl flash-close"></i></div>
+
+        {% endfor %}
+    {% endif %}
+{% endwith %}
