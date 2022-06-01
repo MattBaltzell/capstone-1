@@ -70,3 +70,12 @@ class SearchForm(FlaskForm):
     genres = SelectField('Genre Played', id='genres-search', choices=genre_choices)
     zip_code = StringField('Zip Code', validators=[Length(min=5,max=5,message='Please enter a valid zip code.')])
     radius = IntegerRangeField('Radius in Miles', default=10)
+
+
+class MessageForm(FlaskForm):
+    """Form for sending message to another user."""
+
+    subject = StringField()
+    body = TextAreaField(('Message'), validators=[
+        DataRequired(), Length(min=0, max=140)])
+    
