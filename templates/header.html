@@ -2,8 +2,16 @@
     <div class="flex items-center justify-between">
         <img src="/static/img/hook-logo-grn.svg" class="h-9 w-27 mb-2" alt="hook">
         <div id="header-icons text-slate-100">
-            <a href="/logout"><span class="pr-2">Menu</span><i class="fa-solid fa-ellipsis-vertical text-slate-600 text-xl"></i></a>
+            <p id="nav-menu_btn" class="text-slate-600 hover:text-emerald-400 cursor-pointer"><span class="pr-2 font-[500]">Menu</span><i class="fa-solid fa-ellipsis-vertical  text-xl"></i></p>
         </div>
+    </div>
+    <div id="nav-menu" class="hidden shadow-lg px-6 py-6 z-10 absolute bg-emerald-400 text-white right-0 text-xl ease-linear transition-all duration-150">
+        <nav>
+            <ul>
+                <a href="/logout"><li class="mb-2">Logout</li></a>
+                <a href="/users/update-password"><li>Update Password</li></a>
+            </ul>
+        </nav>
     </div>
     <nav>
         <ul class="flex justify-around text-slate-600">

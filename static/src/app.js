@@ -1,4 +1,6 @@
 const heroVid = document.getElementById('hero-vid')
+const navMenuBtn = document.getElementById('nav-menu_btn')
+const navMenu = document.getElementById('nav-menu')
 const body = document.querySelector('body')
 const radiusText = document.querySelector('.radius_text')
 const radiusSlider = document.querySelector('.radius_slider')
@@ -8,6 +10,11 @@ const editForm = document.getElementById('user_form')
 //Slow down the home page bg video
 if (heroVid){heroVid.playbackRate = .6}
 
+if(navMenuBtn){
+    navMenuBtn.addEventListener('click', function(e){
+        navMenu.classList.toggle('hidden')
+    })
+}
 
 body.addEventListener('click', closeFlashedMsg)
 
