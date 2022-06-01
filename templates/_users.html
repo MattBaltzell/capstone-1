@@ -1,0 +1,29 @@
+<div class="py-4 px-6 shadow-lg bg-white">
+    <div class="flex gap-2 items-center">
+        <a href="/users/{{user.id}}">
+            <img src="{{user.profile_image}}" class="w-24 h-24 rounded-full bg-blue-400 overflow-hidden object-cover" alt="">
+        </a>
+        <div class="flex gap-3">
+            <div class="text-stone-700">
+                <a href="/users/{{user.id}}"><h2 class="text-2xl font-medium">{{user.username.capitalize()}}</h2></a>
+                <p>{{user.city or user.zip_code}} {{user.state if user.state}}</p>
+            </div>
+        </div>
+    </div>
+    <hr class="border-1 my-2 border-emerald-400">
+    <div class="text-stone-700 py-2">
+        <p class=""><span class="mr-1"><i class="fa-solid fa-guitar text-emerald-400 text-md w-[15px]"></i></span><strong  class="text-sm">Instruments</strong></p>
+        <p class="text-sm">
+            {% for inst in user.instruments%}
+            {{inst.name.title()}}{% if not loop.last %},{% endif %}
+            {% endfor %}
+            </p>
+    
+        <p class="mt-2"><span class="mr-2"><i class="fa-solid fa-music text-emerald-400 text-md w-[15px]"></i></span><strong  class="text-sm">Genres</strong></p>
+        <p class="text-sm">
+            {% for g in user.genres%}
+            {{g.name.title()}}{% if not loop.last %},{% endif %}
+            {% endfor %}
+        </p>
+    </div>
+</div>
