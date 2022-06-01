@@ -2,14 +2,14 @@
 
 {% block title %}Hook - Bringing Musicians Together{% endblock %}
 
-{% block content %}
-
 {% include 'header.html'%}
+
+{% block content %}
 
 
 <div class="p-6">
     {% include 'flashed-msgs.html'%}
-    <h1 class="text-4xl leading-tight font-light ">Find Musicians!</h1>
+    <h1 class="text-5xl leading-tight font-light">Find Musicians!</h1>
 
     <form method="POST" id="signup_form" class="flex flex-col pt-6 pb-8 gap-3">
         {{ form.hidden_tag() }}
