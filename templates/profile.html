@@ -16,18 +16,18 @@
             
             <img src={{user.profile_image}} alt={{user.username}}  class="w-48 h-48 rounded-full bg-red-400 object-cover overflow-hidden border-[3px] border-white">
             <div class="text-center">
-                <h1 class="text-3xl font-medium ">{{user.username}}</h1>
+                <h1 class="text-3xl font-medium ">{{user.username|title}}</h1>
                 <p class="text-sm">{%if user.is_band%}BAND{% else %}MUSICIAN{% endif %}</p>
             </div>
                 
         </div>
         <div class="flex mt-4 items-center gap-2 text-center justify-around">
             <div class="flex flex-col gap-1">
-                <a href="#" class="text-emerald-400 hover:underline hover:text-emerald-500 ease-linear transition-all duration-150"><p class="text-3xl">{{user.followers|length}}</p></a>
+                <a href="/followers/{{user.id}}" class="text-emerald-400 hover:underline hover:text-emerald-500 ease-linear transition-all duration-150"><p class="text-3xl">{{user.followers|length}}</p></a>
                 <p class="text-xs font-bold text-gray-600">FOLLOWERS</p>
             </div>
             <div class="flex flex-col gap-1">
-                <a href="#" class="text-emerald-400 hover:underline hover:text-emerald-500 ease-linear transition-all duration-150"><p class="text-3xl">{{user.following|length}}</p></a>
+                <a href="/following/{{user.id}}" class="text-emerald-400 hover:underline hover:text-emerald-500 ease-linear transition-all duration-150"><p class="text-3xl">{{user.following|length}}</p></a>
                 <p class="text-xs font-bold text-gray-600">FOLLOWING</p>
             </div>
         </div>
@@ -38,10 +38,16 @@
                 <p class="text-white"><i class="fa-solid fa-user text-sm pr-1"></i>Edit Profile</p>
             </a>
             {% else %}
-            <a href="#" class="block py-1 px-3 bg-emerald-400 hover:bg-emerald-500 rounded-md w-full text-center ease-linear transition-all duration-150" data-curr-user-id={{curr_user.id}} data-followed-user-id={{user.id}}>
+            {% if curr_user.is_following(user) %}
+            <a href="/unfollow/{{user.id}}" method="post" id='follow_btn' class="block py-1 px-3 bg-emerald-400 hover:bg-emerald-500 rounded-md w-full text-center ease-linear transition-all duration-150" data-curr-user-id={{curr_user.id}} data-followed-user-id={{user.id}}>
+                <p class="text-white"><i class="fa-solid fa-user text-sm pr-1"></i> Unfollow</p>
+            </a>
+            {% else %}
+            <a href="/follow/{{user.id}}" method="post" id='follow_btn' class="block py-1 px-3 bg-emerald-400 hover:bg-emerald-500 rounded-md w-full text-center ease-linear transition-all duration-150" data-curr-user-id={{curr_user.id}} data-followed-user-id={{user.id}}>
                 <p class="text-white"><i class="fa-solid fa-user text-sm pr-1"></i> Follow</p>
             </a>
-            <a href="#" class="block py-1 px-3 bg-emerald-400 hover:bg-emerald-500 rounded-md w-full text-center ease-linear transition-all duration-150">
+            {% endif %}
+            <a href="/messages/{{user.id}}" class="block py-1 px-3 bg-emerald-400 hover:bg-emerald-500 rounded-md w-full text-center ease-linear transition-all duration-150">
                 <p class="text-white"><i class="fa-solid fa-message text-sm pr-1"></i> Message</p>
             </a>
             {% endif %}
@@ -55,7 +61,7 @@
             </div>
         </div>
 
-        <div id="instruments" class="mt-1">
+        <div id="instrument_list" class="mt-1">
             <div class="flex flex-wrap mt-1 gap-2 items-center ">    
                 <p class="text-md "><span><i class="fa-solid fa-guitar text-emerald-400 text-md w-[15px]"></i></span> 
                     {% for inst in user.instruments%}
@@ -65,7 +71,7 @@
             </div>
         </div>
 
-        <div id="genres" class="mt-1">
+        <div id="genre_list" class="mt-1">
             <div class="flex flex-wrap mt-1 gap-2 items-center">    
                 <i class="fa-solid fa-music text-emerald-400 text-md w-[15px]"></i>
                 <p class="text-md">
