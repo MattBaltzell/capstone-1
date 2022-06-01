@@ -701,6 +701,14 @@ select {
   right: 0px;
 }
 
+.right-\[1\.5rem\] {
+  right: 1.5rem;
+}
+
+.right-\[-1\.5rem\] {
+  right: -1.5rem;
+}
+
 .z-10 {
   z-index: 10;
 }
@@ -876,8 +884,36 @@ select {
   width: 15px;
 }
 
+.w-\[25ch\] {
+  width: 25ch;
+}
+
+.max-w-\[25ch\] {
+  max-width: 25ch;
+}
+
+.max-w-\[20ch\] {
+  max-width: 20ch;
+}
+
+.max-w-\[12ch\] {
+  max-width: 12ch;
+}
+
+.max-w-\[15ch\] {
+  max-width: 15ch;
+}
+
+.max-w-\[17ch\] {
+  max-width: 17ch;
+}
+
 .cursor-default {
   cursor: default;
+}
+
+.cursor-pointer {
+  cursor: pointer;
 }
 
 .flex-row-reverse {
@@ -1289,6 +1325,14 @@ select {
   line-height: 2.5rem;
 }
 
+.text-\[2\.0rem\] {
+  font-size: 2.0rem;
+}
+
+.text-\[2\.2rem\] {
+  font-size: 2.2rem;
+}
+
 .font-bold {
   font-weight: 700;
 }
@@ -1536,6 +1580,11 @@ select {
 .hover\:text-emerald-600:hover {
   --tw-text-opacity: 1;
   color: rgb(5 150 105 / var(--tw-text-opacity));
+}
+
+.hover\:text-emerald-400:hover {
+  --tw-text-opacity: 1;
+  color: rgb(52 211 153 / var(--tw-text-opacity));
 }
 
 .hover\:underline:hover {

@@ -2,11 +2,11 @@
 {% include 'header.html' %}
 {% block title %}Search Results{% endblock %}
 {% block content %}
-<div class="px-0 py-6 bg-slate-800  h-full">
+<div class="px-0 py-6 h-full bg-neutral-100">
     {% include 'flashed-msgs.html'%}
-    <h1 class="text-5xl leading-tight font-light mb-5 text-center text-white">Search Results</h1>
-    <a href=""><p>Back to {{user}}'s profile</p></a>
-    <div class="shadow-md flex flex-col py-6  px-6 mb-2 rounded bg-slate-900 w-full gap-2">
+    <h1 class="text-5xl leading-tight font-light mb-2 text-center">Search Results</h1>
+    <a href="/search" class="text-emerald-400 hover:text-emerald-600 underline text-center"><p>New Search</p></a>
+    <div class="shadow-md flex flex-col py-6 mb-2  w-full gap-2">
         {% for user in users %}
         {% include '_users.html' %}
         {% endfor%}
