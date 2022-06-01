@@ -25,53 +25,6 @@ class Follows(db.Model):
     )
 
 
-class Likes(db.Model):
-    """Mapping user likes to posts."""
-
-    __tablename__ = 'likes' 
-
-    id = db.Column(
-        db.Integer,
-        primary_key=True,
-        autoincrement=True
-    )
-
-    user_id = db.Column(
-        db.Integer,
-        db.ForeignKey('users.id', ondelete='cascade')
-    )
-
-    post_id = db.Column(
-        db.Integer,
-        db.ForeignKey('posts.id', ondelete='cascade')
-    )
-
-class Song(db.Model):
-    """"""
-
-    __tablename__ = 'songs' 
-
-    id = db.Column(
-        db.Integer,
-        primary_key=True,
-        autoincrement=True
-    )
-
-    name = db.Column(
-        db.Text,
-        nullable=False,
-    )
-
-    duration = db.Column(
-        db.Integer,
-        nullable=False,
-    )
-
-    song_url = db.Column(
-        db.Text,
-        nullable=False,
-    )
-
 
 class User(db.Model):
     """User in the system."""
@@ -141,7 +94,6 @@ class User(db.Model):
         default=datetime.utcnow(),
     )
 
-    posts = db.relationship('Post')
 
     followers = db.relationship(
         "User",
@@ -156,11 +108,6 @@ class User(db.Model):
         primaryjoin=(Follows.user_following_id == id),
         secondaryjoin=(Follows.user_being_followed_id == id),
         overlaps="followers"
-    )
-
-    likes = db.relationship(
-        'Post',
-        secondary="likes"
     )
 
     genres = db.relationship(
@@ -191,13 +138,7 @@ class User(db.Model):
 
     last_message_read_time = db.Column(db.DateTime)
 
-    songs = db.relationship(
-        'Song',
-        secondary="users_songs",
-        backref="users"
-    )
-
-
+    
     def __repr__(self):
         return f"<User #{self.id}: {self.username}, {self.email}>"
 
@@ -261,65 +202,8 @@ class User(db.Model):
         return False
 
 
-class User_Song(db.Model):
-    """"""
-
-    __tablename__ = 'users_songs'
-
-    id = db.Column(
-        db.Integer,
-        primary_key=True,
-        autoincrement=True
-    )
-
-    user_id = db.Column(
-        db.Integer,
-        db.ForeignKey('users.id'),
-        nullable=False,
-    )
-
-    song_id = db.Column(
-        db.Integer,
-        db.ForeignKey('songs.id'),
-        nullable=False,
-    )
-
-
-class Post(db.Model):
-    """A user post that will display on feed."""
-
-    __tablename__ = 'posts'
-
-    id = db.Column(
-        db.Integer,
-        primary_key=True,
-        autoincrement=True
-    )
-
-    user_id = db.Column(
-        db.Integer,
-        db.ForeignKey('users.id', ondelete='CASCADE'),
-        nullable=False,
-    )
-
-    post_text = db.Column(
-        db.String(140),
-        nullable=False,
-    )
-
-    created_at = db.Column(
-        db.DateTime,
-        nullable=False,
-        default=datetime.utcnow(),
-    )
-
-
-    user = db.relationship('User', overlaps='posts')
-
-
-
 class Genre(db.Model):
-    """"""
+    """Genres."""
 
     __tablename__ = 'genres'
 
@@ -335,7 +219,7 @@ class Genre(db.Model):
     )
 
 class User_Genre(db.Model):
-    """"""
+    """Which Users play which Genres?"""
 
     __tablename__ = 'users_genres'
 
@@ -370,7 +254,7 @@ class User_Genre(db.Model):
 
     
 class Instrument(db.Model):
-    """"""
+    """Instruments."""
 
     __tablename__ = 'instruments'
 
@@ -386,7 +270,7 @@ class Instrument(db.Model):
     )
 
 class User_Instrument(db.Model):
-    """"""
+    """Which Users play which Instruments?"""
 
     __tablename__ = 'users_instruments'
 
@@ -457,12 +341,7 @@ class Message(db.Model):
 
 
 def connect_db(app):
-    """Connect this database to provided Flask app.
-
-    You should call this in your Flask app.
-    """
+    """Connect this database to provided Flask app"""
 
     db.app = app
     db.init_app(app)
-
-

@@ -4,7 +4,7 @@
 
 import os
 from unittest import TestCase
-from models import db, User, Likes, Follows, Instrument, User_Instrument, Genre, User_Genre, Post
+from models import db, User, Follows, Instrument, User_Instrument, Genre, User_Genre
 
 os.environ['DATABASE_URL'] = "postgresql:///hook-find-musicians-test"
 
@@ -20,11 +20,9 @@ class UserModelTestCase(TestCase):
         """Create test client, add sample data."""
 
         User.query.delete()
-        Likes.query.delete()
         Follows.query.delete()
         Instrument.query.delete()
         Genre.query.delete()
-        Post.query.delete()
 
         self.client = app.test_client()
 
@@ -51,15 +49,12 @@ class UserModelTestCase(TestCase):
         db.session.add(u)
         db.session.commit()
         
-        # User should have no posts, followers, following, likes, genres, instruments or songs
-        self.assertEqual(len(u.posts), 0)
+        # User should have no followers, following, genres, or instruments
         self.assertEqual(len(u.followers), 0)
         self.assertEqual(len(u.following), 0)
-        self.assertEqual(len(u.likes), 0)
         self.assertEqual(len(u.genres), 0)
         self.assertEqual(len(u.instruments), 0)
-        self.assertEqual(len(u.songs), 0)
-        self.assertNotEqual(len(u.songs), 10)
+
         # User __repr__ method should work correctly
         self.assertEqual(u.__repr__(),f'<User #{u.id}: testuser, test@test.com>' )
         self.assertEqual(u.is_band, False)
