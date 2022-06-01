@@ -175,6 +175,22 @@ class User(db.Model):
         backref="users"
     )
 
+    messages_sent = db.relationship(
+        'Message',
+        foreign_keys='Message.sender_id',
+        backref='author',
+        lazy='dynamic'        
+    )
+
+    messages_received = db.relationship(
+        'Message',
+        foreign_keys='Message.recipient_id',
+        backref='recipient',
+        lazy='dynamic'        
+    )
+
+    last_message_read_time = db.Column(db.DateTime)
+
     songs = db.relationship(
         'Song',
         secondary="users_songs",
@@ -197,6 +213,10 @@ class User(db.Model):
         found_user_list = [user for user in self.following if user == other_user]
         return len(found_user_list) == 1
 
+    def new_messages(self):
+        last_read_time = self.last_message_read_time or datetime(1900, 1, 1)
+        return Message.query.filter_by(recipient=self).filter(
+            Message.timestamp > last_read_time).count()
     
 
     @classmethod

@@ -1,11 +1,11 @@
 import os
 import requests
-from flask import Flask, render_template, request, flash, redirect, session, g
+from flask import Flask, render_template, request, flash, redirect, session, g, url_for, send_from_directory, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
 from psycopg2 import IntegrityError
-
-from forms import SignupForm, LoginForm, SearchForm, EditProfileForm
-from models import  db, connect_db, User,  Instrument, Genre, Follows, User_Instrument, User_Genre
+from datetime import datetime
+from forms import SignupForm, LoginForm, SearchForm, EditProfileForm, MessageForm
+from models import  db, connect_db, User,  Instrument, Genre, Follows, User_Instrument, User_Genre, Message
 from flask_uploads import configure_uploads, IMAGES, UploadSet
 from werkzeug.utils import secure_filename
 import uuid as uuid
@@ -27,6 +27,8 @@ BASE_DIRECTORY = 'http://127.0.0.1:5000/'
 UPLOAD_FOLDER = 'static/uploads/'
 app.config['UPLOAD_FOLDER']=UPLOAD_FOLDER
 
+POSTS_PER_PAGE = 10
+app.config['POSTS_PER_PAGE']=POSTS_PER_PAGE
 toolbar = DebugToolbarExtension(app)
 
 connect_db(app)
@@ -49,6 +51,9 @@ def get_file_contents(filename):
 API_KEY = get_file_contents(filename)
 RADIUS_BASE_URL = f'https://www.zipcodeapi.com/rest/{API_KEY}/radius.json'
 
+@app.route('/favicon.ico') 
+def favicon(): 
+    return send_from_directory(os.path.join(app.root_path, 'static'), 'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 @app.before_request
 def add_user_to_g():
@@ -312,3 +317,117 @@ def edit_user_profile():
         
         print(form.errors)
         return render_template('edit.html', form=form, page='profile',user=g.user)
+
+
+@app.route('/messages/<int:user_id>', methods=['GET','POST'])
+def send_message(user_id):
+    """Send new message to a user"""
+
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/users/{g.user.id}")
+
+    recipient = User.query.get_or_404(user_id)
+
+    form = MessageForm()
+    
+    if form.validate_on_submit():
+        
+        subject = form.subject.data
+        body = form.body.data
+        msg = Message(sender_id=g.user.id, recipient_id = user_id, subject=subject, body=body)
+
+        db.session.add(msg)
+        db.session.commit()
+
+        flash("Message sent.", "success")
+        return redirect(f'/users/{user_id}')
+
+    else: 
+        return render_template('send-message.html', sender=g.user, page='messages', recipient=recipient, form=form)
+
+@app.route('/messages/<int:message_id>/delete', methods=['GET'])
+def destroy_message(message_id):
+    "Delete message from database"
+   
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/users/{g.user.id}")
+
+    Message.query.filter(Message.id==message_id).delete()
+    db.session.commit()
+
+    flash("Message deleted.", "success")
+    return redirect('/messages')
+
+@app.route('/messages')
+def messages():
+    if not g.user:
+            flash("Access unauthorized.", "danger")
+            return redirect("/users/{g.user.id}")
+
+    g.user.last_message_read_time = datetime.utcnow()
+    db.session.commit()
+    page = request.args.get('page', 1, type=int)
+    messages = g.user.messages_received.order_by(
+        Message.timestamp.desc()).paginate(
+            page, app.config['POSTS_PER_PAGE'], False)
+    next_url = url_for('main.messages', page=messages.next_num) \
+        if messages.has_next else None
+    prev_url = url_for('main.messages', page=messages.prev_num) \
+        if messages.has_prev else None
+    return render_template('messages.html', messages=messages.items,
+                           next_url=next_url, prev_url=prev_url, page='messages')
+
+
+#Follow Routes
+@app.route('/following/<int:user_id>')
+def show_follows(user_id):
+    """Query and display all follows for a user."""
+
+    user = User.query.get_or_404(user_id)
+    users = user.following
+
+    return render_template('following.html', title='Following', user=user,users=users)
+
+
+@app.route('/follow/<int:user_id>', methods=['GET','POST'])
+def follow_user(user_id):
+    """Follow a user"""
+
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/users/{g.user.id}")
+
+    if not g.user.is_following(user_id):
+        
+        follow = Follows(user_being_followed_id=user_id, user_following_id = g.user.id)
+        db.session.add(follow)
+        db.session.commit()
+        return redirect(f"/users/{user_id}")
+    return redirect(f"/users/{user_id}")
+
+
+@app.route('/unfollow/<int:user_id>', methods=['GET','POST'])
+def unfollow_user(user_id):
+    """Unfollow a user"""
+
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/users/{g.user.id}")
+    
+    follow = Follows.query.filter(Follows.user_being_followed_id == user_id, Follows.user_following_id == g.user.id).one()
+    db.session.delete(follow)
+    db.session.commit()
+    return redirect(f"/users/{user_id}")
+
+
+@app.route('/followers/<int:user_id>')
+def show_follower(user_id):
+    """Query and display all followers for a user."""
+
+    user = User.query.get_or_404(user_id)
+    users = user.followers
+
+    return render_template('followers.html', user=user,users=users)
+

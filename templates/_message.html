@@ -1,0 +1,20 @@
+<div class="flex flex-col justify-between w-full border-b-2 border-emerald-400 rounded-sm p-6 py-6 bg-white shadow-lg">
+    <div class="flex flex-col gap-3">
+        <div class="flex gap-3 items-center">
+            <img src="{{ message.author.profile_image }}" class="w-16 h-16 rounded-full bg-blue-400 overflow-hidden object-cover">
+    
+            <p><a href="/users/{{message.author.id}}" class="font-bold text-lg">{{ message.author.username|title }}</a><br><span class="text-sm"> {{ message.timestamp.strftime('%B %d %Y at %I:%M %p') }}</span></p>
+        </div>
+        <div>
+            <p class="font-bold text-gray-500">{{message.subject}}</p>
+            <p>{{ message.body }}</p>
+            <p><a href="/messages/{{message.author.id}}">Reply</a></p>
+            <p><a href="/messages/{{message.id}}/delete">Delete</a></p>
+        </div>
+    </div>
+    
+</div>
+    
+    
+
+    

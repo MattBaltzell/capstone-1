@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% include 'header.html'%}
+
+{% block title %}Messages{% endblock %}
+
+{% block content %}
+<div class="bg-neutral-100 h-full py-6">
+    {% include 'flashed-msgs.html'%}
+    <h1 class="text-5xl leading-tight font-light text-center">Messages</h1>
+    <div class="my-6">
+        {% for message in messages %}
+        {% include '_message.html' %}
+        {% endfor %}
+        {% if not messages %} <p class="px-6">No messages.</p>{% endif %}
+    </div>
+    <nav aria-label="...">
+        <ul class="pager flex justify-between px-6">
+            <li class="text-emerald-400 hover:text-emerald-500{% if not prev_url %} text-gray-200 hover:text-gray-200 {% endif %} ease-linear transition-all duration-150">
+                <a href="{{ prev_url or '#' }}" class="{% if not prev_url %}cursor-default{%endif%}"><span aria-hidden="true">&larr;</span>Newer messages</a>
+            </li>
+            <li class="text-emerald-400 hover:text-emerald-500 {% if not next_url %} text-gray-200 hover:text-gray-200 {% endif %} ease-linear transition-all duration-150">
+                <a href="{{ next_url or '#' }}" class="{% if not prev_url %}cursor-default{%endif%}">Older messages<span aria-hidden="true">&rarr;</span></a>
+            </li>
+        </ul>
+    </nav>
+</div>
+
+
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% include 'header.html'%}
+
+{% block title %}New Message{% endblock %}
+
+{% block content %}
+
+<div class="p-6">
+    {% include 'flashed-msgs.html'%}
+    <h1 class="text-4xl leading-tight font-light ">New Message to {{recipient.username}}</h1>
+
+    <form method="POST" id="send_message_form" class="flex flex-col pt-6 pb-8 gap-3">
+        {{ form.hidden_tag() }}
+
+        {% for field in form if field.widget.input_type != 'hidden' %}       
+            {{field.label(class="text-xl")}}
+            {{ field(placeholder=field.label.text, class="rounded border-1 border-slate-400 placeholder:text-xs placeholder:font-extrabold placeholder:uppercase placeholder:text-slate-400 mb-3") }}
+
+            {% for error in field.errors %}
+                <span class="">{{ error }}</span>
+            {% endfor %}
+           
+        {% endfor %}    
+
+        <button class="bg-emerald-400 text-white active:bg-emerald-500 text-xl mt-2 px-8 pt-2 pb-3 rounded-full shadow hover:shadow-lg hover:bg-emerald-500 outline-none focus:outline-none mb-1 ease-linear transition-all duration-150" type="submit">Send Message</button>
+
+    </form>
+</div>
+
+{% endblock %}
