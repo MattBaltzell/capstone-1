@@ -4,8 +4,8 @@ from flask import Flask, render_template, request, flash, redirect, session, g, 
 from flask_debugtoolbar import DebugToolbarExtension
 from psycopg2 import IntegrityError
 from datetime import datetime
-from forms import SignupForm, LoginForm, SearchForm, EditProfileForm, MessageForm
-from models import  db, connect_db, User,  Instrument, Genre, Follows, User_Instrument, User_Genre, Message
+from forms import SignupForm, LoginForm, SearchForm, EditProfileForm, MessageForm, PasswordUpdateForm
+from models import  db, connect_db, User,  Instrument, Genre, Follows, User_Instrument, User_Genre, Message, bcrypt
 from flask_uploads import configure_uploads, IMAGES, UploadSet
 from werkzeug.utils import secure_filename
 import uuid as uuid
@@ -29,7 +29,7 @@ app.config['UPLOAD_FOLDER']=UPLOAD_FOLDER
 
 POSTS_PER_PAGE = 10
 app.config['POSTS_PER_PAGE']=POSTS_PER_PAGE
-toolbar = DebugToolbarExtension(app)
+# toolbar = DebugToolbarExtension(app)
 
 connect_db(app)
 
@@ -93,6 +93,9 @@ def home_page():
 def login_form():
     """Render login form page. """
 
+    if g.user:
+        return redirect(f'/users/{g.user.id}')
+
     form = LoginForm()
 
     if form.validate_on_submit():
@@ -123,6 +126,9 @@ def logout():
 def signup_form():
     """Render signup form page. """
 
+    if g.user:
+        return redirect(f'/users/{g.user.id}')
+
     form = SignupForm()
 
     if form.validate_on_submit():
@@ -147,7 +153,7 @@ def signup_form():
 
         do_login(user)
 
-        return redirect('/')
+        return redirect(f'/users/{user.id}')
 
     else: 
         return render_template('auth.html', form=form, page='Signup')
@@ -317,6 +323,36 @@ def edit_user_profile():
         
         print(form.errors)
         return render_template('edit.html', form=form, page='profile',user=g.user)
+
+@app.route('/users/update-password', methods=['GET','POST'])
+def update_password():
+    """Update current user's password."""
+
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
+
+
+    form = PasswordUpdateForm()
+
+    if form.validate_on_submit():
+        
+        authenticated = User.authenticate(g.user.username,form.old_password.data)
+
+        if authenticated and form.new_password.data == form.confirm_password.data:
+            password = form.new_password.data
+            g.user.password = bcrypt.generate_password_hash(password).decode('UTF-8')
+            db.session.commit()
+
+            flash('Successfully updated password.', 'success')
+            return redirect(f"/users/{g.user.id}")
+
+        flash('Passwords did not match.', 'danger')
+        return redirect(f"/users/{g.user.id}")
+
+
+    else:
+        return render_template('edit-password.html',form=form, user=g.user)
 
 
 @app.route('/messages/<int:user_id>', methods=['GET','POST'])

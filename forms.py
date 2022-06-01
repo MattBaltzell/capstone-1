@@ -79,3 +79,9 @@ class MessageForm(FlaskForm):
     body = TextAreaField(('Message'), validators=[
         DataRequired(), Length(min=0, max=140)])
     
+class PasswordUpdateForm(FlaskForm):
+    """Form for updating current user's password"""
+
+    old_password = PasswordField('Enter Old Password', validators=[Length(min=6)])
+    new_password = PasswordField('Enter New Password', validators=[Length(min=6)])
+    confirm_password = PasswordField('Confirm New Password', validators=[Length(min=6)])
