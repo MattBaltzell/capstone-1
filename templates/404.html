@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block title %}404 - Page not found!{% endblock %}
+{% block header %}{% include 'header.html' %}{% endblock %}
+{% block content %}
+<div class="flex flex-col gap-4 items-center justify-center container p-8 w-screen max-w-2xl h-[80vh] ">
+    <h1 class="text-center text-2xl">{{error}}</h1>
+    <a href="/" class="text-emerald-400 hover:text-emerald-600 hover:underline ease-linear transition-all duration-150 text-center text-xl"><p>Back to home page</p></a>
+</div>
+{% endblock %}
