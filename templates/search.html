@@ -1,30 +1,41 @@
 {% extends 'base.html' %}
-
 {% block title %}Hook - Bringing Musicians Together{% endblock %}
-
-{% include 'header.html'%}
-
+{% block header %}{% include 'header.html' %}{% endblock %}
 {% block content %}
 
+<img src="/static/img/sam-moghadam-khamseh-IOo8pnaE8Po-unsplash.jpg" alt="band playing music" class="z-[-1000] fixed object-cover object-top  h-[100%] w-full top-0 left-0 hidden md:block lg:hidden">
 
-<div class="p-6">
+<img src="/static/img/sam-moghadam-khamseh-IOo8pnaE8Po-unsplash.jpg" alt="band playing music" class="z-[-1000] fixed object-cover object-top h-full bottom-0 right-0 max-h-screen max-w-xl xl:max-w-3xl 2xl:max-w-5xl hidden lg:block" style="-webkit-clip-path: polygon(25% 0%, 100% 0, 100% 100%, 25% 100%, 0% 50%);
+    clip-path: polygon(25% 0%, 100% 0, 100% 100%, 25% 100%, 0% 50%);">
+
+<div class="p-6 md:flex lg:block md:flex-col md:justify-center md:w-full lg:w-[unset] lg:p-8 min-h-[90vh] lg:px-28 relative ">
+    
     {% include 'flashed-msgs.html'%}
-    <h1 class="text-5xl leading-tight font-light">Find Musicians!</h1>
+    
+    <div class="p-0 w-full md:self-center md:p-6 md:max-w-sm lg:p-[unset] md:rounded md:bg-white lg:bg-transparent md:mb-16 lg:mb-[unset] md:shadow-2xl lg:shadow-none">
 
-    <form method="POST" id="signup_form" class="flex flex-col pt-6 pb-8 gap-3">
+    <h1 class="text-5xl leading-tight font-light lg:mt-6 lg:text-6xl">Find Musicians!</h1>
+
+    <form method="POST" id="signup_form" class="flex flex-col pt-6 pb-8 gap-3 lg:max-w-xs">
         {{ form.hidden_tag() }}
 
         {% for field in form if field.widget.input_type != 'hidden' %}
-            {% for error in field.errors %}
+            
+                {% for error in field.errors %}
                 <span class="">{{ error }}</span>
-            {% endfor %}
+                {% endfor %}
+            
             {% if field.type in ["IntegerRangeField"] %}
-            {{field.label(class="text-xl")}}
-            <div class="radius_text text-6xl"></div>
-            {{field(min=0, max=100, step=10, class="radius_slider")}}
+            
+                {{field.label(class="text-xl")}}
+                <div class="radius_text text-6xl"></div>
+                {{field(min=0, max=100, step=10, class="radius_slider")}}
+            
             {% else %}
-            {{field.label(class="text-xl")}}
-            {{ field(placeholder=field.label.text, class="rounded border-1 border-slate-400 placeholder:text-xs placeholder:font-extrabold placeholder:uppercase placeholder:text-slate-400 mb-3") }}
+            
+                {{field.label(class="text-xl")}}
+                {{ field(placeholder=field.label.text, class="rounded border-1 border-slate-400 placeholder:text-xs placeholder:font-extrabold placeholder:uppercase placeholder:text-slate-400 mb-3") }}
+            
             {% endif %}
                 
         {% endfor %}    
@@ -32,6 +43,8 @@
         <button class="bg-emerald-400 text-white active:bg-emerald-500 text-xl mt-2 px-8 pt-2 pb-3 rounded-full shadow hover:shadow-lg hover:bg-emerald-500 outline-none focus:outline-none mb-1 ease-linear transition-all duration-150" type="submit">Search</button>
 
     </form>
+    </div>
+
 </div>
     
 {% endblock %}
