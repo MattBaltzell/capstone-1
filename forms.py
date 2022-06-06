@@ -1,9 +1,10 @@
 import email
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField
+from multiselect_options import INSTRUMENT_CHOICES, GENRE_CHOICES
 from models import Instrument, Genre
-from wtforms import StringField, PasswordField, BooleanField, IntegerRangeField, RadioField, TextAreaField, SelectMultipleField, SelectField
-from wtforms.validators import DataRequired, Email, Length
+from wtforms import StringField, IntegerField, PasswordField, BooleanField, IntegerRangeField, RadioField, TextAreaField, SelectMultipleField, SelectField
+from wtforms.validators import DataRequired, Email, Length, NumberRange
 
 
 class SignupForm(FlaskForm):
@@ -14,22 +15,19 @@ class SignupForm(FlaskForm):
     password = PasswordField('Password', validators=[Length(min=6)])
     city = StringField('City', validators=[DataRequired()])
     state = StringField('State', validators=[Length(min=2,max=2,message='Use abbreviated state name (AL, CA, NY, TX).'),DataRequired()])
-    zip_code = StringField('Zip Code', validators=[Length(min=5,max=5,message='Please enter a valid zip code.')])
+    zip_code = IntegerField('Zip Code', validators=[NumberRange(min=00000, max=99999, message='Please enter a valid zip code.'),DataRequired()])
     is_band = BooleanField('Is this a band page?')
 
-GENRE_CHOICES = "generator/genres.txt"
-INSTRUMENT_CHOICES = "generator/instruments.txt"
 
-def create_multiform_choices(choices_file):
+def create_multiform_choices(list):
     """Create choice tuples to use as multiform choices."""
 
-    file = choices_file
     result = []
-    with open(file, "r") as choices:
-        for choice in choices.readlines():
-            try:
-                  result.append((choice.strip(), choice.strip().title()))
-            except:pass
+   
+    for choice in list:
+        try:
+            result.append((choice, choice.title()))
+        except:pass
     return result
 
 instrument_choices = create_multiform_choices(INSTRUMENT_CHOICES)
@@ -45,7 +43,7 @@ class EditProfileForm(FlaskForm):
     email = StringField('E-mail', validators=[Email(),DataRequired()])
     city = StringField('City', validators=[Length(min=2),DataRequired()])
     state = StringField('State', validators=[Length(min=2,max=2,message='Please abbreviate the state (e.g. WA, CA, NY).'),DataRequired()])
-    zip_code = StringField('Zip Code', validators=[Length(min=5,max=5,message='Please enter a valid zip code.'),DataRequired()])
+    zip_code = IntegerField('Zip Code', validators=[NumberRange(min=00000, max=99999, message='Please enter a valid zip code.'),DataRequired()])
     instruments = SelectMultipleField('Instruments', id='instruments', choices=instrument_choices)
     genres = SelectMultipleField('Genres', id='genres', choices=genre_choices)
     bio = TextAreaField('Bio',render_kw={"rows": 5, "cols": 11})
@@ -68,7 +66,7 @@ class SearchForm(FlaskForm):
     default=False, validators=[DataRequired()])
     instruments = SelectField('Instrument Played', id='instruments-search', choices=instrument_choices)
     genres = SelectField('Genre Played', id='genres-search', choices=genre_choices)
-    zip_code = StringField('Zip Code', validators=[Length(min=5,max=5,message='Please enter a valid zip code.')])
+    zip_code = IntegerField('Zip Code', validators=[NumberRange(min=00000, max=99999, message='Please enter a valid zip code.'),DataRequired()])
     radius = IntegerRangeField('Radius in Miles', default=10)
 
 
