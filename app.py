@@ -5,7 +5,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 from psycopg2 import IntegrityError
 from datetime import datetime
 from forms import SignupForm, LoginForm, SearchForm, EditProfileForm, MessageForm, PasswordUpdateForm
-from models import  db, connect_db, User,  Instrument, Genre, Follows, User_Instrument, User_Genre, Message, bcrypt
+from models import  db, connect_db, User,  Instrument, Genre, Follows, User_Instrument, User_Genre, Message, Notification, bcrypt
 from flask_uploads import configure_uploads, IMAGES, UploadSet
 from werkzeug.utils import secure_filename
 import uuid as uuid
@@ -26,6 +26,7 @@ app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', "it's a secret")
 BASE_DIRECTORY = 'http://127.0.0.1:5000/'
 UPLOAD_FOLDER = 'static/uploads/'
 app.config['UPLOAD_FOLDER']=UPLOAD_FOLDER
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 
 POSTS_PER_PAGE = 10
 app.config['POSTS_PER_PAGE']=POSTS_PER_PAGE
@@ -99,8 +100,7 @@ def login_form():
     form = LoginForm()
 
     if form.validate_on_submit():
-        user = User.authenticate(form.username.data,
-                                 form.password.data)
+        user = User.authenticate(form.username.data,form.password.data)
 
         if user:
             do_login(user)
@@ -172,20 +172,25 @@ def search_musicians():
         session["searching_for_band"] = form.is_band.data
         session["searching_instrument"] = form.instruments.data
         session["searching_genre"] = form.genres.data
-        zip = form.zip_code.data
+        zip_code = form.zip_code.data
         radius = form.radius.data
 
-        resp = requests.get(f"{RADIUS_BASE_URL}/{zip}/{radius}/miles")
+        try:
+            resp = requests.get(f"{RADIUS_BASE_URL}/{str(zip_code)}/{radius}/miles")
 
-        res = resp.json()['zip_codes']
+            res = resp.json()['zip_codes']
 
-        zips = []
+            zips = []
 
-        for zip in res:
-            zips.append(zip['zip_code'])
+            for zip in res:
+                zips.append(zip['zip_code'])
 
-        session['response_zip_codes'] = zips
+            session['response_zip_codes'] = zips
 
+        except KeyError:
+            flash('API demo request limit has been reached. Please try again in an hour. Sorry for the inconvenience.', 'danger')
+            return render_template('search.html', form=form, page='search')
+        
         return redirect ('/results')
 
     else:
@@ -233,19 +238,19 @@ def edit_user_profile():
  
     if not g.user:
         flash("Access unauthorized.", "danger")
-        return redirect("/users/{g.user.id}")
+        return redirect("/")
 
     form = EditProfileForm(obj=g.user)
     
     if form.validate_on_submit():
-        
+
         user = User.authenticate(g.user.username,form.password.data)
 
         if user:
             
             # Upload header image
             if request.files['header_image']:
-                
+
                 updated_header_img = request.files['header_image']
                 
                 # Grab Image Names
@@ -261,8 +266,8 @@ def edit_user_profile():
                 header_img_filename = BASE_DIRECTORY + UPLOAD_FOLDER + header_img_uuid_name
 
                 g.user.header_image =  header_img_filename or User.header_image.default.arg
-            
-
+                
+                
             # Upload profile image
             if request.files['profile_image']:
 
@@ -287,6 +292,9 @@ def edit_user_profile():
             g.user.username = form.username.data
             g.user.email = form.email.data
             g.user.bio = form.bio.data
+            g.user.city=form.city.data
+            g.user.state=form.state.data
+            g.user.zip_code=form.zip_code.data
             
             # Clear current user's instruments list before adding form data
             g.user.instruments = []
@@ -294,7 +302,7 @@ def edit_user_profile():
             # Add form data to add instruments to current user's list
             for instrument in form.instruments.data:
 
-                inst = Instrument.query.filter_by(name = instrument).one()
+                inst = Instrument.query.filter_by(name = instrument).first()
                 User_Instrument.add_instrument_to_user(user_id=user.id, instrument_id=inst.id)
                 db.session.add(inst)
 
@@ -304,7 +312,7 @@ def edit_user_profile():
             # Add form data to add instruments to current user's list
             for genre in form.genres.data:
     
-                gen = Genre.query.filter_by(name = genre).one()
+                gen = Genre.query.filter_by(name = genre).first()
                 User_Genre.add_genre_to_user(user_id=user.id, genre_id=gen.id)
                 db.session.add(gen)
             
@@ -316,6 +324,7 @@ def edit_user_profile():
         
         flash("You entered the wrong password!","error")
         return redirect(request.url)
+    
     else:
         # Update form fields with user data for instruments and genres
         form.instruments.data = [instrument.name for instrument in g.user.instruments]
@@ -323,6 +332,7 @@ def edit_user_profile():
         
         print(form.errors)
         return render_template('edit.html', form=form, page='profile',user=g.user)
+
 
 @app.route('/users/update-password', methods=['GET','POST'])
 def update_password():
@@ -369,6 +379,8 @@ def send_message(user_id):
     
     if form.validate_on_submit():
         
+        recipient.add_notification('unread_message_count', recipient.new_messages())
+
         subject = form.subject.data
         body = form.body.data
         msg = Message(sender_id=g.user.id, recipient_id = user_id, subject=subject, body=body)
@@ -403,7 +415,9 @@ def messages():
             return redirect("/users/{g.user.id}")
 
     g.user.last_message_read_time = datetime.utcnow()
+    g.user.add_notification('unread_message_count', 0)
     db.session.commit()
+
     page = request.args.get('page', 1, type=int)
     messages = g.user.messages_received.order_by(
         Message.timestamp.desc()).paginate(
@@ -414,6 +428,26 @@ def messages():
         if messages.has_prev else None
     return render_template('messages.html', messages=messages.items,
                            next_url=next_url, prev_url=prev_url, page='messages')
+
+
+@app.route('/notifications')
+def notifications():
+    """Update notifications using an AJAX call"""
+    
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
+
+    since = request.args.get('since', 0.0, type=float)
+
+    notifications = g.user.notifications.filter(
+        Notification.timestamp > since).order_by(Notification.timestamp.asc())
+    
+    return jsonify([{
+        'name': n.name,
+        'data': n.get_data(),
+        'timestamp': n.timestamp
+    } for n in notifications])
 
 
 #Follow Routes
@@ -467,3 +501,29 @@ def show_follower(user_id):
 
     return render_template('followers.html', user=user,users=users)
 
+
+@app.errorhandler(413)
+def request_entity_too_large(error):
+    """What happens if a file is too large."""
+
+    if not g.user:
+        return render_template('home-anon.html')
+
+    user = g.user
+    curr_user = g.user
+    db.session.rollback()
+    flash('The photo upload was too large. Please limit file uploads to <16MB.' + str(error), 'danger')
+    return render_template('profile.html',413, user=user,curr_user=curr_user, page='profile')
+    
+
+
+@app.errorhandler(404)
+def page_not_found(error):
+    """What happens if a page not found."""
+
+    if not g.user:
+        flash('The requested page was not found. You have been redirected.', 'danger')
+        return render_template('home-anon.html')
+
+    
+    return render_template('404.html',404,error=error)

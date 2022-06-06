@@ -2,6 +2,8 @@ from datetime import datetime
 from flask import g
 from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
+import json
+from time import time
 
 bcrypt = Bcrypt()
 db = SQLAlchemy()
@@ -138,6 +140,11 @@ class User(db.Model):
 
     last_message_read_time = db.Column(db.DateTime)
 
+    notifications = db.relationship(
+        'Notification', 
+        backref='user',
+        lazy='dynamic')
+
     
     def __repr__(self):
         return f"<User #{self.id}: {self.username}, {self.email}>"
@@ -158,6 +165,12 @@ class User(db.Model):
         last_read_time = self.last_message_read_time or datetime(1900, 1, 1)
         return Message.query.filter_by(recipient=self).filter(
             Message.timestamp > last_read_time).count()
+
+    def add_notification(self, name, data):
+        self.notifications.filter_by(name=name).delete()
+        n = Notification(name=name, payload_json=json.dumps(data), user=self)
+        db.session.add(n)
+        return n
     
 
     @classmethod
@@ -200,6 +213,7 @@ class User(db.Model):
                 return user
 
         return False
+
 
 
 class Genre(db.Model):
@@ -338,6 +352,21 @@ class Message(db.Model):
         index=True, 
         default=datetime.utcnow
     )
+
+
+class Notification(db.Model):
+    """Notifications."""
+
+    __tablename__ = 'notifications'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(128), index=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete="cascade"))
+    timestamp = db.Column(db.Float, index=True, default=time)
+    payload_json = db.Column(db.Text)
+
+    def get_data(self):
+        return json.loads(str(self.payload_json))
 
 
 def connect_db(app):
