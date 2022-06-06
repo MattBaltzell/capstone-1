@@ -126,6 +126,8 @@ class UserModelTestCase(TestCase):
         self.assertIsNotNone(auth_user.city)
         self.assertIsNotNone(auth_user.state)
         self.assertEqual(auth_user.zip_code, '36832')
+        self.assertEqual(auth_user.instruments, [])
+        self.assertEqual(auth_user.genres, [])
         
         auth_fail_user1 = User.authenticate('testuser','WRONG_PASSWORD')
         auth_fail_user2 = User.authenticate('WRONG_USERNAME','HASHED_PASSWORD')
