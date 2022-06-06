@@ -1,14 +1,12 @@
 {% extends 'base.html' %}
-
-{% include 'header.html'%}
-
 {% block title %}Messages{% endblock %}
-
+{% block header %}{% include 'header.html' %}{% endblock %}
 {% block content %}
-<div class="bg-neutral-100 h-full py-6">
+<div class="bg-stone-200 w-full h-full fixed top-0 left-0 z-[-1000]"></div>
+<div class="flex flex-col items-center px-0 py-6 h-full">
     {% include 'flashed-msgs.html'%}
     <h1 class="text-5xl leading-tight font-light text-center">Messages</h1>
-    <div class="my-6">
+    <div class="flex flex-col py-6 mb-2 w-full md:max-w-2xl gap-2 md:gap-4">
         {% for message in messages %}
         {% include '_message.html' %}
         {% endfor %}

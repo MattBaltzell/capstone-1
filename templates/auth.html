@@ -3,7 +3,7 @@
 {% block title %}Hook - {{ page }}!{% endblock %}
 
 {% block content %}
-<div class="h-full p-4">
+<div class="h-screen p-4">
 <div class="flex flex-col items-stretch justify-between h-full px-2 py-8 relative">
     
     <div class="absolute w-full top-0 left-0 mt-6">
@@ -12,7 +12,7 @@
     
     <img src="/static/img/hook-logo-grn.svg" class="box-border h-8 w-24 self-center" alt="hook">
     
-    <div class="container text-slate-700">
+    <div class="container text-stone-700 max-w-md">
     
         {% if page == 'Signup' %}
         <h1 class="text-5xl font-light text-center">Create Account</h1>
@@ -28,7 +28,7 @@
             <div class="flex gap-2 flex-row-reverse justify-end items-center">
                 {{field.label}}
                 {% endif %}
-                {{ field(placeholder=field.label.text, class="rounded border-1 border-slate-400 placeholder:text-xs placeholder:font-extrabold placeholder:uppercase placeholder:text-slate-400") }}
+                {{ field(placeholder=field.label.text, class="rounded border-1 border-stone-400 placeholder:text-xs placeholder:font-extrabold placeholder:uppercase placeholder:text-stone-400") }}
                 {% if field.label.text == 'Is this a band page?'%}
             </div>
             {%endif%}
@@ -47,9 +47,9 @@
         </form>
     </div>
     {% if page == 'Signup' %}
-    <p class="text-center text-slate-600">Already have an account? <a href="/login" class="text-emerald-400 font-bold">Log in</a></p>
+    <p class="text-center text-stone-600">Already have an account? <a href="/login" class="text-emerald-400 font-bold">Log in</a></p>
     {% else %}
-    <p class="text-center text-slate-600">Don't have an account? <a href="/signup" class="text-emerald-400 font-bold">Sign up</a></p>
+    <p class="text-center text-stone-600">Don't have an account? <a href="/signup" class="text-emerald-400 font-bold">Sign up</a></p>
     {% endif %}
 </div>
 </div>

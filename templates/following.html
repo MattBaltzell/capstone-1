@@ -1,12 +1,13 @@
 {% extends 'base.html'%}
-{% include 'header.html' %}
 {% block title %}Following{% endblock %}
+{% block header %}{% include 'header.html' %}{% endblock %}
 {% block content %}
-<div class="px-0 py-6 h-full bg-neutral-100">
+<div class="bg-stone-200 w-full h-full fixed top-0 left-0 z-[-1000]"></div>
+<div class="flex flex-col items-center px-0 py-6 h-full">
     {% include 'flashed-msgs.html'%}
     <h1 class="text-5xl leading-tight font-light mb-2 text-center">Following</h1>
     <a href="/users/{{user.id}}" class="text-emerald-400 hover:text-emerald-600 underline text-center"><p>Back to {{user.username|title}}'s profile</p></a>
-    <div class="shadow-md flex flex-col py-6 mb-2  w-full gap-2">
+    <div class="flex flex-col md:grid md:grid-cols-2 py-6 mb-2 w-full md:max-w-4xl gap-2 md:gap-4">
         {% if users|length < 1 %}
         <p class="text-center">No follows</p>
         {% endif %}

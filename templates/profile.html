@@ -1,59 +1,59 @@
 {% extends 'base.html' %}
-
-{% include 'header.html'%}
-
 {% block title %}{{user.username.capitalize()}}'s Profile{% endblock %}
-
+{% block header %}{% include 'header.html' %}{% endblock %}
 {% block content %}
-
-<main class="relative">
+<div class="bg-stone-200 w-full h-full fixed top-0 left-0"></div>
+<main class="relative w-full bg-white rounded-lg md:max-w-4xl md:self-center">
     <div class="absolute w-full top-0 left-0 p-6">
         {% include 'flashed-msgs.html'%}
     </div>
-    <img src={{user.header_image}} alt={{user.username}}  class="w-full h-[11rem] object-cover ">
-        <div class="p-6 mt-[-11rem]">
-        <div class="flex flex-col mt-3 items-center gap-2">
+    <img src={{user.header_image}} alt={{user.username}}  class="w-full h-[11rem] md:h-[14rem] object-cover">
+        <div class="p-6 md:p-8 lg:p-12 mt-[-11rem] md:mt-[-7rem] ">
+        <div class="flex flex-col md:flex-row mt-3 items-center gap-2 md:gap-4">
             
-            <img src={{user.profile_image}} alt={{user.username}}  class="w-48 h-48 rounded-full bg-red-400 object-cover overflow-hidden border-[3px] border-white">
-            <div class="text-center">
-                <h1 class="text-3xl font-medium ">{{user.username|title}}</h1>
-                <p class="text-sm">{%if user.is_band%}BAND{% else %}MUSICIAN{% endif %}</p>
+            <img src={{user.profile_image}} alt={{user.username}}  class="w-48 h-48 rounded-full bg-white object-cover  border-[3px] md:border-[4px] border-white">
+            <div class="text-center md:text-left">
+                <h1 class="text-3xl md:text-4xl font-medium md:mt-16">{{user.username|title}}</h1>
+                <p class="text-sm md:text-md md:mt-1">{%if user.is_band%}BAND{% else %}MUSICIAN{% endif %}</p>
             </div>
                 
         </div>
-        <div class="flex mt-4 items-center gap-2 text-center justify-around">
-            <div class="flex flex-col gap-1">
-                <a href="/followers/{{user.id}}" class="text-emerald-400 hover:underline hover:text-emerald-500 ease-linear transition-all duration-150"><p class="text-3xl">{{user.followers|length}}</p></a>
-                <p class="text-xs font-bold text-gray-600">FOLLOWERS</p>
-            </div>
-            <div class="flex flex-col gap-1">
-                <a href="/following/{{user.id}}" class="text-emerald-400 hover:underline hover:text-emerald-500 ease-linear transition-all duration-150"><p class="text-3xl">{{user.following|length}}</p></a>
-                <p class="text-xs font-bold text-gray-600">FOLLOWING</p>
-            </div>
-        </div>
         
-        <div id="profile_buttons" class="flex items-center gap-2 mt-4 ">
-            {% if user == curr_user %}
-            <a href="/users/edit" class="block py-1 px-3 bg-emerald-400 hover:bg-emerald-500 rounded-md w-full text-center ease-linear transition-all duration-150">
-                <p class="text-white"><i class="fa-solid fa-user text-sm pr-1"></i>Edit Profile</p>
-            </a>
-            {% else %}
-            {% if curr_user.is_following(user) %}
-            <a href="/unfollow/{{user.id}}" method="post" id='follow_btn' class="block py-1 px-3 bg-emerald-400 hover:bg-emerald-500 rounded-md w-full text-center ease-linear transition-all duration-150" data-curr-user-id={{curr_user.id}} data-followed-user-id={{user.id}}>
-                <p class="text-white"><i class="fa-solid fa-user text-sm pr-1"></i> Unfollow</p>
-            </a>
-            {% else %}
-            <a href="/follow/{{user.id}}" method="post" id='follow_btn' class="block py-1 px-3 bg-emerald-400 hover:bg-emerald-500 rounded-md w-full text-center ease-linear transition-all duration-150" data-curr-user-id={{curr_user.id}} data-followed-user-id={{user.id}}>
-                <p class="text-white"><i class="fa-solid fa-user text-sm pr-1"></i> Follow</p>
-            </a>
-            {% endif %}
-            <a href="/messages/{{user.id}}" class="block py-1 px-3 bg-emerald-400 hover:bg-emerald-500 rounded-md w-full text-center ease-linear transition-all duration-150">
-                <p class="text-white"><i class="fa-solid fa-message text-sm pr-1"></i> Message</p>
-            </a>
-            {% endif %}
+        <div class="md:flex md:flex-col md:items-center md:justify-center md:w-72 md:ml-auto">
+            <div class="flex mt-4 md:mt-[-8rem] items-center gap-2 md:gap-10 text-center justify-around md:justify-end">
+                <div class="flex flex-col md:flex-row md:items-center gap-1 md:gap-2">
+                    <a href="/followers/{{user.id}}" class="text-emerald-400 hover:underline hover:text-emerald-500 ease-linear transition-all duration-150"><p class="text-3xl">{{user.followers|length}}</p></a>
+                    <p class="text-xs font-bold text-gray-600 md:mt-1">FOLLOWERS</p>
+                </div>
+                <div class="flex flex-col md:flex-row md:items-center gap-1 md:gap-2">
+                    <a href="/following/{{user.id}}" class="text-emerald-400 hover:underline hover:text-emerald-500 ease-linear transition-all duration-150"><p class="text-3xl">{{user.following|length}}</p></a>
+                    <p class="text-xs font-bold text-gray-600 md:mt-1">FOLLOWING</p>
+                </div>
+            </div>
+            
+            <div id="profile_buttons" class="flex items-center gap-2 mt-4 md:mt-2 md:w-72">
+                {% if user == curr_user %}
+                <a href="/users/edit" class="block py-1 px-3 bg-emerald-400 hover:bg-emerald-500 rounded-md w-full text-center ease-linear transition-all duration-150">
+                    <p class="text-white"><i class="fa-solid fa-user text-sm pr-1"></i>Edit Profile</p>
+                </a>
+                {% else %}
+                {% if curr_user.is_following(user) %}
+                <a href="/unfollow/{{user.id}}" method="post" id='follow_btn' class="block py-1 px-3 bg-emerald-400 hover:bg-emerald-500 rounded-md w-full text-center ease-linear transition-all duration-150" data-curr-user-id={{curr_user.id}} data-followed-user-id={{user.id}}>
+                    <p class="text-white"><i class="fa-solid fa-user text-sm pr-1"></i> Unfollow</p>
+                </a>
+                {% else %}
+                <a href="/follow/{{user.id}}" method="post" id='follow_btn' class="block py-1 px-3 bg-emerald-400 hover:bg-emerald-500 rounded-md w-full text-center ease-linear transition-all duration-150" data-curr-user-id={{curr_user.id}} data-followed-user-id={{user.id}}>
+                    <p class="text-white"><i class="fa-solid fa-user text-sm pr-1"></i> Follow</p>
+                </a>
+                {% endif %}
+                <a href="/messages/{{user.id}}" class="block py-1 px-3 bg-emerald-400 hover:bg-emerald-500 rounded-md w-full text-center ease-linear transition-all duration-150">
+                    <p class="text-white"><i class="fa-solid fa-message text-sm pr-1"></i> Message</p>
+                </a>
+                {% endif %}
+            </div>
         </div>
-
-        <hr class="border-1 border-emerald-200 mt-5 mb-4">
+            
+        <hr class="border-1 border-emerald-200 mt-4 mb-4">
 
         <div id="address">
             <div class="flex flex-wrap mt-1 gap-2 items-center">    

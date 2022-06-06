@@ -1,16 +1,13 @@
 {% extends 'base.html' %}
-
-{% include 'header.html'%}
-
 {% block title %}New Message{% endblock %}
-
+{% block header %}{% include 'header.html' %}{% endblock %}
 {% block content %}
-
-<div class="p-6">
+<div class="bg-stone-200 w-full h-full fixed top-0 left-0 z-[-1000]"></div>
+<div class="flex flex-col items-center p-6 h-full w-full md:max-w-2xl bg-white rounded-b-lg md:self-center">
     {% include 'flashed-msgs.html'%}
     <h1 class="text-4xl leading-tight font-light ">New Message to {{recipient.username}}</h1>
 
-    <form method="POST" id="send_message_form" class="flex flex-col pt-6 pb-8 gap-3">
+    <form method="POST" id="send_message_form" class="flex flex-col w-full pt-6 pb-4 gap-3">
         {{ form.hidden_tag() }}
 
         {% for field in form if field.widget.input_type != 'hidden' %}       

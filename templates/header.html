@@ -1,11 +1,11 @@
-<header class="shadow-lg px-6 pt-8 relative z-10">
-    <div class="flex items-center justify-between">
+<header class="shadow-lg  pt-8 relative z-10 bg-white">
+    <div class="flex items-center justify-between px-6 md:px-8 lg:px-28 max-w-7xl container">
         <img src="/static/img/hook-logo-grn.svg" class="h-9 w-27 mb-2" alt="hook">
-        <div id="header-icons text-slate-100">
-            <p id="nav-menu_btn" class="text-slate-600 hover:text-emerald-400 cursor-pointer"><span class="pr-2 font-[500]">Menu</span><i class="fa-solid fa-ellipsis-vertical  text-xl"></i></p>
+        <div id="header-icons text-stone-100" class="nav_menu">
+            <p id="nav-menu_btn" class="nav_menu text-stone-600 hover:text-emerald-400 cursor-pointer"><span class="nav_menu pr-2 font-[500]">Menu</span><i class="fa-solid fa-ellipsis-vertical  text-xl nav_menu"></i></p>
         </div>
     </div>
-    <div id="nav-menu" class="hidden shadow-lg px-6 py-6 z-10 absolute bg-emerald-400 text-white right-0 text-xl ease-linear transition-all duration-150">
+    <div id="nav-menu" class="hidden shadow-lg px-8 py-6 z-10 absolute bg-emerald-400 text-white right-0 text-xl ease-linear transition-all duration-150">
         <nav>
             <ul>
                 <a href="/logout"><li class="mb-2">Logout</li></a>
@@ -13,28 +13,75 @@
             </ul>
         </nav>
     </div>
-    <nav>
-        <ul class="flex justify-around text-slate-600">
+    <nav class="container px-6 md:px-12 lg:px-28 max-w-7xl">
+        <ul class="flex justify-around text-stone-600">
           
             {% if page=='search'%}
             <li class="border-b-[3px] border-transparent py-2 w-[100%] text-center font-[500]"><a href="/users/{{g.user.id}}">Profile</a></li>
             <li class="border-b-[3px] border-emerald-400 py-2 w-[100%] text-center font-[500]"><a href="/search">Search</a></li>
-            <li class="border-b-[3px] border-transparent py-2 w-[100%] text-center font-[500]"><a href="/messages">Messages</a></li>
+            <li class="border-b-[3px] border-transparent py-2 w-[100%] text-center font-[500]">
+                <a href="/messages" class="relative">
+                    Messages
+                    {% set new_messages = g.user.new_messages() %}
+                    <span id="message_count" class="relative top-[-3px] bg-rose-500 text-[70%] px-1 py-0.5 text-center  whitespace-nowrap rounded-full font-bold text-white align-middle" 
+                        style="visibility: {% if new_messages %}visible
+                                                   {% else %}hidden {% endif %}; display: {% if new_messages %}inline
+                                                   {% else %}none {% endif %};">
+                        {{ new_messages }}
+                        
+                    </span>
+                </a>
+            </li>
             
             {% elif page=='profile' and user == g.user %}
             <li class="border-b-[3px] border-emerald-400 py-2 w-[100%] text-center font-[500]"><a href="/users/{{g.user.id}}">Profile</a></li>
             <li class="border-b-[3px] border-transparent py-2 w-[100%] text-center font-[500]"><a href="/search">Search</a></li>
-            <li class="border-b-[3px] border-transparent py-2 w-[100%] text-center font-[500]"><a href="/messages">Messages</a></li>
+            <li class="border-b-[3px] border-transparent py-2 w-[100%] text-center font-[500]">
+                <a href="/messages" class="relative">
+                    Messages
+                    {% set new_messages = g.user.new_messages() %}
+                    <span id="message_count" class="relative top-[-3px] bg-rose-500 text-[70%] px-1 py-0.5 text-center  whitespace-nowrap rounded-full font-bold text-white align-middle" 
+                         style="visibility: {% if new_messages %}visible
+                                                   {% else %}hidden {% endif %}; display: {% if new_messages %}inline
+                                                   {% else %}none {% endif %};">
+                        {{ new_messages }}
+                        
+                    </span>
+                </a>
+            </li>
             
             {% elif page=='messages'%}
             <li class="border-b-[3px] border-transparent py-2 w-[100%] text-center font-[500]"><a href="/users/{{g.user.id}}">Profile</a></li>
             <li class="border-b-[3px] border-transparent py-2 w-[100%] text-center font-[500]"><a href="/search">Search</a></li>
-            <li class="border-b-[3px] border-emerald-400 py-2 w-[100%] text-center font-[500]"><a href="/messages">Messages</a></li>
+            <li class="border-b-[3px] border-emerald-400 py-2 w-[100%] text-center font-[500]">
+                <a href="/messages" class="relative">
+                    Messages
+                    {% set new_messages = g.user.new_messages() %}
+                    <span id="message_count" class="relative top-[-3px] bg-rose-500 text-[70%] px-1 py-0.5 text-center  whitespace-nowrap rounded-full font-bold text-white align-middle" 
+                         style="visibility: {% if new_messages %}visible
+                                                   {% else %}hidden {% endif %}; display: {% if new_messages %}inline
+                                                   {% else %}none {% endif %};">
+                        {{ new_messages }}
+                        
+                    </span>
+                </a>
+            </li>
             
             {% else %}
             <li class="border-b-[3px] border-transparent py-2 w-[100%] text-center font-[500]"><a href="/users/{{g.user.id}}">Profile</a></li>
             <li class="border-b-[3px] border-transparent py-2 w-[100%] text-center font-[500]"><a href="/search">Search</a></li>
-            <li class="border-b-[3px] border-transparent py-2 w-[100%] text-center font-[500]"><a href="/messages">Messages</a></li>
+            <li class="border-b-[3px] border-transparent py-2 w-[100%] text-center font-[500]">
+                <a href="/messages" class="relative">
+                    Messages
+                    {% set new_messages = g.user.new_messages() %}
+                    <span id="message_count" class="relative top-[-3px] bg-rose-500 text-[70%] px-1 py-0.5 text-center  whitespace-nowrap rounded-full font-bold text-white align-middle" 
+                         style="visibility: {% if new_messages %}visible
+                                                   {% else %}hidden {% endif %};">
+                        {{ new_messages }}
+                        
+                    </span>
+                </a>
+            </li>
             {% endif %}
             
         </ul>
