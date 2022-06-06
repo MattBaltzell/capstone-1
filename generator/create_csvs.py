@@ -40,7 +40,7 @@ header_image_urls = [
     for i in range(1, 46)
 ]
 
-sample_zip_codes = ['36830','36832','36022', '36054', '36066', '35242', '36117', '36695', '35758']
+sample_zip_codes = [36830,36832,36022, 36054, 36066, 35242, 36117, 36695, 35758]
 
 
 with open('users.csv', 'w') as users_csv:
