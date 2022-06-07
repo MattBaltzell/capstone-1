@@ -192,3 +192,80 @@ class UserViewTestCase(TestCase):
             self.assertIn('<p class="text-md"><span><i class="fa-solid fa-location-dot text-emerald-400 text-md w-[15px]"></i></span> Test City, AK 36022</p>',html )
             self.assertIn('<img src=/static/uploads/default-pic.png alt=testuser4  class="w-48 h-48 rounded-full bg-white object-cover  border-[3px] md:border-[4px] border-white">',html )
 
+
+    def test_new_message(self):
+        """Does the login form render and redirect to profile on submit?"""
+
+
+        with self.client as c:
+            
+            with c.session_transaction() as sess:
+                sess[CURR_USER_KEY] = self.testuser1.id
+
+            recipient = User.query.filter(User.username == 'testuser2').first()
+
+            resp = c.get(f"/messages/{recipient.id}")          
+            html = resp.get_data(as_text=True)
+
+            #Does the message form page render?
+            self.assertEqual(resp.status_code, 200)
+            self.assertIn('<h1 class="text-4xl leading-tight font-light ">New Message to testuser2</h1>', html)
+            self.assertNotIn('testuser1', html)
+            self.assertIn('<input class="rounded border-1 border-slate-400 placeholder:text-xs placeholder:font-extrabold placeholder:uppercase placeholder:text-slate-400 mb-3" id="subject" name="subject" placeholder="Subject" type="text" value="">', html)
+
+
+            #Does form submit and redirect to profile page with a 'success' flash message?
+            form_data = {"subject":"Testing Subject Line","body":"Testing message body"}
+
+            resp = c.post(f"/messages/{recipient.id}", data=form_data, follow_redirects=True)
+            html = resp.get_data(as_text=True)
+
+            self.assertEqual(resp.status_code, 200)
+            self.assertNotIn('<h1 class="text-4xl leading-tight font-light ">New Message to testuser2</h1>', html)
+            self.assertIn('<h1 class="text-3xl md:text-4xl font-medium md:mt-16">Testuser2</h1>', html)
+            self.assertIn('testuser2', html)
+            self.assertIn('<div class="flashed_msg flex items-center justify-between flash-msg bg-emerald-200 w-full p-4 text-black text-center rounded mb-5  shadow-lg" role="alert">Message sent.<i class="fa-solid fa-xmark text-xl flash-close"></i></div>', html)
+
+
+    def test_message_received(self):
+        """Do the message notifications work? Does the message list render?"""
+
+
+        with self.client as c:
+            
+            with c.session_transaction() as sess:
+                sess[CURR_USER_KEY] = self.testuser2.id
+
+            user1 = User.query.filter(User.username == 'testuser1').first()
+            user2 = User.query.filter(User.username == 'testuser2').first()
+
+            msg = Message(sender_id=user1.id,recipient_id=user2.id,subject='testing the subject line',body='testing the body of the message')
+            db.session.add(msg)
+            db.session.commit()
+
+            resp = c.get(f"/users/{user2.id}")          
+            html = resp.get_data(as_text=True)
+
+
+            #Does the message notification render?
+            self.assertEqual(resp.status_code, 200)
+            self.assertIn('span id="message_count" class="relative top-[-3px] bg-rose-500 text-[70%] px-1 py-0.5 text-center  whitespace-nowrap rounded-full font-bold text-white align-middle" \n                         style="visibility: visible\n                                                   ; display: inline\n                                                   ;">\n                        1\n                        \n                    </span>', html)
+
+
+            #Does the message list render?
+            resp = c.get("/messages")          
+            html = resp.get_data(as_text=True)
+
+            self.assertEqual(resp.status_code, 200)
+            self.assertIn('testing the subject line',html)
+            self.assertIn('testing the body of the message',html)
+            self.assertNotIn('No messages.',html)
+           
+            
+     
+
+            
+
+
+
+            
