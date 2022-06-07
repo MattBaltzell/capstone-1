@@ -13,6 +13,8 @@ for instrument in INSTRUMENT_CHOICES:
 for genre in GENRE_CHOICES:
     g = Genre(name=genre)
     db.session.add(g)
+
+db.session.commit()
  
 
 with open('generator/users.csv') as users:
