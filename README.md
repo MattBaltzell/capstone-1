@@ -2,9 +2,6 @@
 
 Hook allows musicians to easily locate and communicate with other musicians or bands within a given search radius. Currently, this app is for portfolio purposes only. The API used is on a free plan and limited to only 10 API calls per hour, and it does not use a CDN to store image uploads. I hope to continue development on this project and eventually get it to a point where it can be used as an actual tool to help musicians in the future.
 
-## Deployed Website
-You can view the deployed app at www.hook.herokuapp.com. 
-
 ## Getting Started
 
 ### Sign Up:
