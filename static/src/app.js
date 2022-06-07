@@ -44,6 +44,9 @@ window.addEventListener('DOMContentLoaded', (e) => {
 
 // Update message notifications
 window.addEventListener('load', (e) => {
+    // The navMenu is only present when a user is logged in. 
+    // So, in order to prevent errors, return if the navMenu is not present.
+    if(!navMenu)return;
 
     let since = 0;
     setInterval( async function(){
