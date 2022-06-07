@@ -34,7 +34,6 @@ toolbar = DebugToolbarExtension(app)
 
 connect_db(app)
 
-
 filename = 'apikey.txt'
 
 
