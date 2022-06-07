@@ -23,7 +23,7 @@ app.config['SQLALCHEMY_ECHO'] = False
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'thisIsasupersecretkey9afswooooo097yup')
 
-BASE_DIRECTORY = 'http://127.0.0.1:5000/'
+BASE_DIRECTORY = 'https://hook-musician-finder.herokuapp.com/'
 UPLOAD_FOLDER = 'static/uploads/'
 app.config['UPLOAD_FOLDER']=UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
