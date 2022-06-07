@@ -22,5 +22,7 @@ Once you visit another user's profile you can choose to follow them, which will 
 ## External Api:
 This app uses the [ZipCodeAPI](https://www.zipcodeapi.com/API#radius). On the search page, a user can type in a zip code and choose a search radius. This API uses these two parameters to create a list of zip codes within the given radius of the zip code.
 
+The app also uses [SlimSelectjs](https://slimselectjs.com/) to enhance the select fields throughout.
+
 ## Technology Stack:
-Flask, Jinja, TailwindCSS, SQLAlchemy, WTForms, PostgreSQL, Bcrypt, JavaScript, [SlimSelectjs](https://slimselectjs.com/)
+PostgreSQL, Flask, Python, JavaScript 
