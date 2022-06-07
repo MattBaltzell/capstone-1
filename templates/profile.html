@@ -64,6 +64,7 @@
         <div id="instrument_list" class="mt-1">
             <div class="flex flex-wrap mt-1 gap-2 items-center ">    
                 <p class="text-md "><span><i class="fa-solid fa-guitar text-emerald-400 text-md w-[15px]"></i></span> 
+                    {%if user.is_band%}Seeking {% else %}{% endif %}
                     {% for inst in user.instruments%}
                     {{inst.name.title()}}{% if not loop.last %},{% endif %}
                     {% endfor %}
