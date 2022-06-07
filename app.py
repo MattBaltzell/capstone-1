@@ -147,7 +147,6 @@ def signup_form():
             db.session.commit();
         
         except exc.IntegrityError:
-            db.session.rollback()
             flash('Username or Email already taken', 'danger')
             return render_template('auth.html', form=form, page='Signup')
 
@@ -520,10 +519,6 @@ def request_entity_too_large(error):
 @app.errorhandler(404)
 def page_not_found(error):
     """What happens if a page not found."""
-
-    if not g.user:
-        flash('The requested page was not found. You have been redirected.', 'danger')
-        return render_template('home-anon.html')
-
     
-    return render_template('404.html',404,error=error)
+    return render_template('404.html',error=error),404
+
