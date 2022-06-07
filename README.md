@@ -2,12 +2,8 @@
 
 Hook allows musicians to easily locate and communicate with other musicians or bands within a given search radius. Currently, this app is for portfolio purposes only. The API used is on a free plan and limited to only 10 API calls per hour, and it does not use a CDN to store image uploads. I hope to continue development on this project and eventually get it to a point where it can be used as an actual tool to help musicians in the future.
 
----
-
 ## Deployed Website
 You can view the deployed app at www.hook.herokuapp.com. 
-
----
 
 ## Getting Started
 
@@ -23,12 +19,8 @@ The main priority of this app is to give users the ability to find musicians and
 ### Follow and Message Others:
 Once you visit another user's profile you can choose to follow them, which will add them to the "Following" list you can access from your own profile. You also have the ability to send them a message. Fill out the subject line and message and send. A message notification will be sent to that user in the 'Messages' tab of the header.
 
----
-
 ## External Api:
 This app uses the [ZipCodeAPI](https://www.zipcodeapi.com/API#radius). On the search page, a user can type in a zip code and choose a search radius. This API uses these two parameters to create a list of zip codes within the given radius of the zip code.
-
----
 
 ## Technology Stack:
 Flask, Jinja
