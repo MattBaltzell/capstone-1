@@ -16,7 +16,8 @@ db.create_all()
 
 # Don't have WTForms use CSRF at all, since it's a pain to test
 app.config['WTF_CSRF_ENABLED'] = False
-
+app.config['TESTING'] = True
+app.config['DEBUG_TB_HOSTS'] = ['dont-show-debug-toolbar']
 
 class UserViewTestCase(TestCase):
     """Test views for users."""
@@ -73,7 +74,7 @@ class UserViewTestCase(TestCase):
             with c.session_transaction() as sess:
                 sess[CURR_USER_KEY] = self.testuser1.id
 
-            resp = c.get(f"users/{user.id}")          
+            resp = c.get(f"/users/{user.id}")          
             html = resp.get_data(as_text=True)
 
             self.assertEqual(resp.status_code, 200)
@@ -210,7 +211,6 @@ class UserViewTestCase(TestCase):
             #Does the message form page render?
             self.assertEqual(resp.status_code, 200)
             self.assertIn('<h1 class="text-4xl leading-tight font-light ">New Message to testuser2</h1>', html)
-            self.assertNotIn('testuser1', html)
             self.assertIn('<input class="rounded border-1 border-slate-400 placeholder:text-xs placeholder:font-extrabold placeholder:uppercase placeholder:text-slate-400 mb-3" id="subject" name="subject" placeholder="Subject" type="text" value="">', html)
 
 
