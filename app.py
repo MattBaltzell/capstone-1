@@ -52,7 +52,7 @@ def get_file_contents(filename):
         print("'%s' file not found" % filename)
 
 
-API_KEY = get_file_contents(filename)
+API_KEY = os.environ.get('API_KEY', get_file_contents(filename))
 RADIUS_BASE_URL = f'https://www.zipcodeapi.com/rest/{API_KEY}/radius.json'
 
 @app.route('/favicon.ico') 
