@@ -30,7 +30,7 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 
 POSTS_PER_PAGE = 10
 app.config['POSTS_PER_PAGE']=POSTS_PER_PAGE
-# toolbar = DebugToolbarExtension(app)
+toolbar = DebugToolbarExtension(app)
 
 connect_db(app)
 
