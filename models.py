@@ -65,13 +65,13 @@ class User(db.Model):
     profile_image = db.Column(
         db.String(),
         nullable=True,
-        default="/static/uploads/default-pic.png",
+        default="/static/img/default-pic.png",
     )
 
     header_image = db.Column(
         db.String(),
         nullable=True,
-        default="/static/uploads/default-header-pic.jpg"
+        default="/static/img/default-header-pic.jpg"
     )
 
     bio = db.Column(
