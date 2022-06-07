@@ -1,4 +1,5 @@
 import os
+import re
 import requests
 from flask import Flask, render_template, request, flash, redirect, session, g, url_for, send_from_directory, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
@@ -15,8 +16,11 @@ CURR_USER_KEY = "curr_user"
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = (
-    os.environ.get('DATABASE_URL', 'postgresql:///hook-find-musicians'))
+uri = os.environ.get('DATABASE_URL', 'postgresql:///hook-find-musicians')
+if uri.startswith("postgres://"):
+    uri = uri.replace("postgres://", "postgresql://", 1)
+
+app.config['SQLALCHEMY_DATABASE_URI'] = uri
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = False
