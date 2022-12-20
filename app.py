@@ -16,7 +16,7 @@ CURR_USER_KEY = "curr_user"
 
 app = Flask(__name__)
 
-uri = os.environ.get('DATABASE_URL', 'postgresql:///hook_find_musicians')
+uri = os.environ.get('DATABASE_URL', 'postgresql:///hook-find-musicians')
 if uri.startswith("postgres://"):
     uri = uri.replace("postgres://", "postgresql://", 1)
 
